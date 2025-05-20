@@ -29,8 +29,8 @@ const Newsletter = () => {
             <h2 className="text-2xl md:text-3xl font-display font-bold mb-4 gradient-text">انضمي إلى قائمتنا على وتساب</h2>
             <p className="text-muted-foreground mb-8">اشتركي في قناة وتساب لمتجر نغمات السعادة واحصلي على آخر العروض والخصومات مباشرة </p>
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              
-              <Button type="submit" disabled={loading} className="text-justify mx-[180px] text-lg font-semibold">
+              <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="البريد الإلكتروني" className="flex-1" required />
+              <Button type="submit" disabled={loading}>
                 {loading ? "جاري الإرسال..." : "اشتراك"}
               </Button>
             </form>
