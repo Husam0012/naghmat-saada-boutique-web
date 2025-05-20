@@ -1,54 +1,114 @@
 
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, ShoppingCart, TrendingUp, Users } from "lucide-react";
+import { dataService } from "@/services/auth.service";
+
+interface Statistic {
+  id: string;
+  visitors_count: number;
+  orders_count: number;
+  revenue: number;
+  date: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  sales?: number; // For tracking sales count
+}
+
+interface Order {
+  id: string;
+  order_number: string;
+  customer_name: string;
+  date: string;
+  status: string;
+  total_amount: number;
+  created_at: string;
+}
 
 const Dashboard = () => {
+  const [statistics, setStatistics] = useState<Statistic | null>(null);
+  const [topProducts, setTopProducts] = useState<Product[]>([]);
+  const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        // Fetch statistics
+        const statsData = await dataService.getStatistics();
+        setStatistics(statsData);
+
+        // Fetch products (in a real app, you would aggregate sales data)
+        const productsData = await dataService.getProducts();
+        
+        // For demo, let's assign random sales to products
+        const productsWithSales = productsData.map((product: any) => ({
+          ...product,
+          sales: Math.floor(Math.random() * 30) + 5 // Random sales between 5-35
+        })).sort((a: any, b: any) => b.sales - a.sales).slice(0, 5);
+        
+        setTopProducts(productsWithSales);
+
+        // Fetch recent orders
+        const ordersData = await dataService.getOrders();
+        setRecentOrders(ordersData.slice(0, 5).map((order: any) => ({
+          ...order,
+          date: new Date(order.created_at).toISOString().split('T')[0]
+        })));
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
   const stats = [
     {
       title: "إجمالي الزوار",
-      value: "1,234",
+      value: statistics?.visitors_count || 0,
       icon: <Users className="h-6 w-6" />,
       change: "+12%",
       positive: true,
     },
     {
       title: "إجمالي الطلبات",
-      value: "64",
+      value: statistics?.orders_count || 0,
       icon: <ShoppingCart className="h-6 w-6" />,
       change: "+8%",
       positive: true,
     },
     {
       title: "إجمالي المبيعات",
-      value: "12,345 ر.س",
+      value: `${statistics?.revenue || 0} ر.س`,
       icon: <TrendingUp className="h-6 w-6" />,
       change: "+23%",
       positive: true,
     },
     {
       title: "متوسط قيمة الطلب",
-      value: "193 ر.س",
+      value: statistics?.orders_count && statistics.revenue 
+        ? `${Math.round(statistics.revenue / statistics.orders_count)} ر.س`
+        : "0 ر.س",
       icon: <BarChart3 className="h-6 w-6" />,
       change: "-2%",
       positive: false,
     },
   ];
 
-  const topProducts = [
-    { name: "فستان أنيق بتصميم عصري", sales: 24 },
-    { name: "حقيبة يد نسائية", sales: 18 },
-    { name: "طقم إكسسوارات فاخر", sales: 15 },
-    { name: "عطر مميز للنساء", sales: 12 },
-    { name: "حذاء كعب عالي", sales: 10 },
-  ];
-
-  const recentOrders = [
-    { id: "#12345", customer: "سارة أحمد", date: "2025-05-19", status: "مكتمل", amount: "450 ر.س" },
-    { id: "#12344", customer: "نورة محمد", date: "2025-05-19", status: "قيد التجهيز", amount: "320 ر.س" },
-    { id: "#12343", customer: "ريم خالد", date: "2025-05-18", status: "قيد الشحن", amount: "750 ر.س" },
-    { id: "#12342", customer: "جواهر عبدالله", date: "2025-05-18", status: "مكتمل", amount: "195 ر.س" },
-    { id: "#12341", customer: "لمى سعود", date: "2025-05-17", status: "مكتمل", amount: "540 ر.س" },
-  ];
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <p>جاري تحميل البيانات...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -85,7 +145,7 @@ const Dashboard = () => {
           <CardContent>
             <ul className="space-y-4">
               {topProducts.map((product, index) => (
-                <li key={index} className="flex items-center justify-between">
+                <li key={product.id} className="flex items-center justify-between">
                   <div className="flex items-center">
                     <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm ml-3">
                       {index + 1}
@@ -119,25 +179,36 @@ const Dashboard = () => {
                 <tbody>
                   {recentOrders.map((order) => (
                     <tr key={order.id} className="border-t border-border">
-                      <td className="py-3 text-sm">{order.id}</td>
-                      <td className="py-3 text-sm">{order.customer}</td>
+                      <td className="py-3 text-sm">{order.order_number}</td>
+                      <td className="py-3 text-sm">{order.customer_name}</td>
                       <td className="py-3 text-sm">{order.date}</td>
                       <td className="py-3 text-sm">
                         <span
                           className={`px-2 py-1 rounded-full text-xs ${
-                            order.status === "مكتمل"
+                            order.status === "delivered"
                               ? "bg-green-100 text-green-800"
-                              : order.status === "قيد التجهيز"
+                              : order.status === "processing"
                               ? "bg-yellow-100 text-yellow-800"
-                              : "bg-blue-100 text-blue-800"
+                              : order.status === "shipped"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-red-100 text-red-800"
                           }`}
                         >
-                          {order.status}
+                          {order.status === "processing" ? "قيد التجهيز" : 
+                           order.status === "shipped" ? "تم الشحن" : 
+                           order.status === "delivered" ? "تم التسليم" : "ملغي"}
                         </span>
                       </td>
-                      <td className="py-3 text-sm font-medium text-left">{order.amount}</td>
+                      <td className="py-3 text-sm font-medium text-left">{order.total_amount} ر.س</td>
                     </tr>
                   ))}
+                  {recentOrders.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-4 text-center text-muted-foreground">
+                        لا يوجد طلبات حالياً
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

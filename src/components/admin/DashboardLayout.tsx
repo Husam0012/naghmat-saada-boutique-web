@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Package, Tag, Settings, User, BarChart3, Menu, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { adminAuth } from "@/services/auth.service";
 
 interface SidebarItemProps {
   icon: React.ReactNode;
@@ -39,6 +40,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const isMobile = useIsMobile();
 
   const handleLogout = () => {
+    adminAuth.logout();
     toast({
       title: "تم تسجيل الخروج بنجاح",
       description: "شكراً لاستخدامك لوحة تحكم نغمات السعادة",

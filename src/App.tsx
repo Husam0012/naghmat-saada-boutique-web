@@ -11,6 +11,7 @@ import ContactPage from "./pages/Contact";
 import AdminLoginPage from "./pages/AdminLogin";
 import AdminDashboardPage from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
+import AdminAuthGuard from "./components/admin/AdminAuthGuard";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +26,11 @@ const App = () => (
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/admin" element={<AdminLoginPage />} />
-          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+          <Route path="/admin/dashboard" element={
+            <AdminAuthGuard>
+              <AdminDashboardPage />
+            </AdminAuthGuard>
+          } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

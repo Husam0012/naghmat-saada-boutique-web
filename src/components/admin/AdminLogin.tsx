@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { adminAuth } from "@/services/auth.service";
 
 const AdminLogin = () => {
   const [username, setUsername] = useState("");
@@ -14,13 +15,13 @@ const AdminLogin = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    // Simple authentication check
-    setTimeout(() => {
-      if (username === "Admin" && password === "Admin") {
+    try {
+      const result = await adminAuth.login(username, password);
+      if (result.success) {
         toast({
           title: "تم تسجيل الدخول بنجاح",
           description: "مرحبًا بك في لوحة تحكم نغمات السعادة",
@@ -29,12 +30,19 @@ const AdminLogin = () => {
       } else {
         toast({
           title: "فشل تسجيل الدخول",
-          description: "اسم المستخدم أو كلمة المرور غير صحيحة",
+          description: result.error || "اسم المستخدم أو كلمة المرور غير صحيحة",
           variant: "destructive",
         });
       }
+    } catch (error) {
+      toast({
+        title: "حدث خطأ",
+        description: "الرجاء المحاولة مرة أخرى لاحقاً",
+        variant: "destructive",
+      });
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
