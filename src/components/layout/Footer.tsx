@@ -1,24 +1,15 @@
-
 import { Link } from "react-router-dom";
 import { Phone, Mail } from "lucide-react";
-
 const Footer = () => {
-  return (
-    <footer className="bg-muted pt-12 pb-6 mt-12">
+  return <footer className="bg-muted pt-12 pb-6 mt-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center mb-4">
-              <img 
-                src="/lovable-uploads/e45d98e8-4977-4f11-942d-aa0807b70a3c.png" 
-                alt="نغمات السعادة" 
-                className="h-10 w-auto"
-              />
+              <img src="/lovable-uploads/e45d98e8-4977-4f11-942d-aa0807b70a3c.png" alt="نغمات السعادة" className="h-10 w-auto" />
               <h3 className="text-xl font-display font-bold mr-2 gradient-text">نغمات السعادة</h3>
             </div>
-            <p className="text-muted-foreground mb-4">
-              متجر إلكتروني متخصص بتوفير منتجات عالية الجودة للنساء بتصاميم عصرية وأنيقة.
-            </p>
+            <p className="text-muted-foreground mb-4">متجر إلكتروني متخصص بتوفير منتجات عالية الجودة للمستحضرات التجميل وعناية الشخصية وطب وصحة</p>
             <div className="flex space-x-4 space-x-reverse">
               <a href="#" className="hover:text-primary transition-colors">
                 <span className="sr-only">Instagram</span>
@@ -68,7 +59,7 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-center">
                 <Phone className="h-5 w-5 ml-2 text-primary" />
-                <span>+966 123 456 789</span>
+                <span>967770740731+</span>
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 ml-2 text-primary" />
@@ -88,8 +79,6 @@ const Footer = () => {
           <p>© {new Date().getFullYear()} نغمات السعادة. جميع الحقوق محفوظة.</p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
