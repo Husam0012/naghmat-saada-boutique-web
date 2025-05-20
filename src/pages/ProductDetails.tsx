@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -34,10 +33,13 @@ const ProductDetailsPage = () => {
   const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
+  // Fix the query to handle possible undefined id
+  const productId = id || '';
+  
   const { data: product, isLoading } = useQuery({
-    queryKey: ["product", id],
-    queryFn: () => dataService.getProductById(id as string),
-    enabled: !!id,
+    queryKey: ["product", productId],
+    queryFn: () => dataService.getProductById(productId),
+    enabled: !!productId,
   });
 
   useEffect(() => {
