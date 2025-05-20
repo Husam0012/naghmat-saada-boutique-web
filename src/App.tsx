@@ -19,6 +19,7 @@ import SpecialOffersPage from "./pages/SpecialOffers";
 import AdminLoginPage from "./pages/AdminLogin";
 import AdminDashboardPage from "./pages/AdminDashboard";
 import AdminCategoriesPage from "./pages/AdminCategories";
+import AdminProductsPage from "./pages/AdminProducts";
 import NotFound from "./pages/NotFound";
 import AdminAuthGuard from "./components/admin/AdminAuthGuard";
 
@@ -48,7 +49,16 @@ const App = () => (
               <AdminDashboardPage />
             </AdminAuthGuard>
           } />
-          <Route path="/admin/categories" element={<AdminCategoriesPage />} />
+          <Route path="/admin/categories" element={
+            <AdminAuthGuard>
+              <AdminCategoriesPage />
+            </AdminAuthGuard>
+          } />
+          <Route path="/admin/products" element={
+            <AdminAuthGuard>
+              <AdminProductsPage />
+            </AdminAuthGuard>
+          } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
