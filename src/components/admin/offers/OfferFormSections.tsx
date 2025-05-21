@@ -8,15 +8,24 @@ import { Tables } from "@/integrations/supabase/types";
 import { UseFormReturn } from "react-hook-form";
 import { OfferFormValues } from "./offerSchema";
 
-interface OfferFormSectionProps {
+// Base form section props
+interface BaseFormSectionProps {
   form: UseFormReturn<OfferFormValues>;
-  categories?: Tables<"categories">[];
-  products?: Tables<"products">[];
-  discountType: string;
-  targetType: string;
 }
 
-export const BasicInfoSection = ({ form }: OfferFormSectionProps) => (
+// Props for sections that need discount type
+interface DiscountSectionProps extends BaseFormSectionProps {
+  discountType: string;
+}
+
+// Props for sections that need target type
+interface TargetSectionProps extends BaseFormSectionProps {
+  targetType: string;
+  categories?: Tables<"categories">[];
+  products?: Tables<"products">[];
+}
+
+export const BasicInfoSection = ({ form }: BaseFormSectionProps) => (
   <>
     <FormField
       control={form.control}
@@ -52,7 +61,7 @@ export const BasicInfoSection = ({ form }: OfferFormSectionProps) => (
   </>
 );
 
-export const DiscountSection = ({ form, discountType }: OfferFormSectionProps) => (
+export const DiscountSection = ({ form, discountType }: DiscountSectionProps) => (
   <div className="grid grid-cols-2 gap-4">
     <FormField
       control={form.control}
@@ -105,7 +114,7 @@ export const DiscountSection = ({ form, discountType }: OfferFormSectionProps) =
   </div>
 );
 
-export const TargetSection = ({ form, targetType, categories, products }: OfferFormSectionProps) => (
+export const TargetSection = ({ form, targetType, categories, products }: TargetSectionProps) => (
   <>
     <FormField
       control={form.control}
@@ -179,7 +188,7 @@ export const TargetSection = ({ form, targetType, categories, products }: OfferF
   </>
 );
 
-export const DateSection = ({ form }: OfferFormSectionProps) => (
+export const DateSection = ({ form }: BaseFormSectionProps) => (
   <div className="grid grid-cols-2 gap-4">
     <FormField
       control={form.control}
@@ -211,7 +220,7 @@ export const DateSection = ({ form }: OfferFormSectionProps) => (
   </div>
 );
 
-export const StatusSection = ({ form }: OfferFormSectionProps) => (
+export const StatusSection = ({ form }: BaseFormSectionProps) => (
   <FormField
     control={form.control}
     name="is_active"
