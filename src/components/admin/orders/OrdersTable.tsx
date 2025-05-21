@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Order } from "./OrdersManagement";
 import {
@@ -37,18 +36,18 @@ const formatDate = (dateString: string) => {
   }).format(date);
 };
 
-const getStatusBadgeVariant = (status: string | null) => {
+const getStatusBadge = (status: string) => {
   switch (status) {
-    case 'processing':
-      return 'default';
-    case 'shipped':
-      return 'secondary';
-    case 'delivered':
-      return 'success';
-    case 'cancelled':
-      return 'destructive';
+    case "processing":
+      return <Badge variant="secondary">قيد المعالجة</Badge>;
+    case "shipped":
+      return <Badge variant="default">تم الشحن</Badge>;
+    case "delivered":
+      return <Badge>تم التسليم</Badge>;
+    case "cancelled":
+      return <Badge variant="destructive">ملغي</Badge>;
     default:
-      return 'outline';
+      return <Badge variant="outline">{status}</Badge>;
   }
 };
 
@@ -152,9 +151,7 @@ export function OrdersTable({ orders, onUpdateStatus }: OrdersTableProps) {
                   <TableCell className="hidden lg:table-cell">{formatDate(order.created_at)}</TableCell>
                   <TableCell>{order.total_amount} ريال</TableCell>
                   <TableCell>
-                    <Badge variant={getStatusBadgeVariant(order.status)}>
-                      {getStatusLabel(order.status)}
-                    </Badge>
+                    {getStatusBadge(order.status)}
                   </TableCell>
                   <TableCell>
                     <Button variant="ghost" size="sm" onClick={() => onUpdateStatus(order)}>

@@ -2,7 +2,7 @@
 import { ReactNode, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Package, Tag, Settings, User, BarChart3, Menu, X } from "lucide-react";
+import { ShoppingCart, Package, Tag, Settings, User, BarChart3, Menu, X, Percent } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { adminAuth } from "@/services/auth.service";
@@ -68,6 +68,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       icon: <Tag className="h-5 w-5" />,
       label: "التصنيفات",
       to: "/admin/categories",
+    },
+    {
+      icon: <Percent className="h-5 w-5" />,
+      label: "العروض الخاصة",
+      to: "/admin/special-offers",
     },
     {
       icon: <Settings className="h-5 w-5" />,
