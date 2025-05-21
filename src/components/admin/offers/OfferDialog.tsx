@@ -1,17 +1,9 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
 import { Offer } from "./OffersManagement";
 import { Tables } from "@/integrations/supabase/types";
 import { useOfferForm } from "./useOfferForm";
-import { 
-  BasicInfoSection, 
-  DiscountSection,
-  TargetSection,
-  DateSection,
-  StatusSection
-} from "./OfferFormSections";
+import OfferForm from "./OfferForm";
 
 interface OfferDialogProps {
   open: boolean;
@@ -44,33 +36,16 @@ const OfferDialog = ({
           <DialogTitle>{isEditing ? "تعديل العرض" : "إضافة عرض جديد"}</DialogTitle>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <BasicInfoSection form={form} />
-            <DiscountSection form={form} discountType={discountType} />
-            <TargetSection 
-              form={form} 
-              targetType={targetType} 
-              categories={categories} 
-              products={products} 
-            />
-            <DateSection form={form} />
-            <StatusSection form={form} />
-
-            <div className="flex justify-end space-x-2 space-x-reverse">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
-                إلغاء
-              </Button>
-              <Button type="submit">
-                {isEditing ? "تحديث العرض" : "إضافة العرض"}
-              </Button>
-            </div>
-          </form>
-        </Form>
+        <OfferForm 
+          form={form}
+          onSubmit={onSubmit}
+          isEditing={isEditing}
+          discountType={discountType}
+          targetType={targetType}
+          categories={categories}
+          products={products}
+          onCancel={() => onOpenChange(false)}
+        />
       </DialogContent>
     </Dialog>
   );
