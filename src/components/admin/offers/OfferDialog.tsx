@@ -57,27 +57,28 @@ const OfferDialog = ({
 }: OfferDialogProps) => {
   const isEditing = !!offer;
 
-  let discountType = "percentage";
-  let discountValue = "";
-  let targetType = "all";
-  let targetId = "";
+  // Calculate initial values
+  let initialDiscountType = "percentage";
+  let initialDiscountValue = "";
+  let initialTargetType = "all";
+  let initialTargetId = "";
 
   if (offer) {
-    discountType = offer.discount_percentage ? "percentage" : "amount";
-    discountValue = offer.discount_percentage
+    initialDiscountType = offer.discount_percentage ? "percentage" : "amount";
+    initialDiscountValue = offer.discount_percentage
       ? String(offer.discount_percentage)
       : offer.discount_amount
       ? String(offer.discount_amount)
       : "";
     
     if (offer.applies_to_category_id) {
-      targetType = "category";
-      targetId = offer.applies_to_category_id.id;
+      initialTargetType = "category";
+      initialTargetId = offer.applies_to_category_id.id;
     } else if (offer.applies_to_product_id) {
-      targetType = "product";
-      targetId = offer.applies_to_product_id.id;
+      initialTargetType = "product";
+      initialTargetId = offer.applies_to_product_id.id;
     } else {
-      targetType = "all";
+      initialTargetType = "all";
     }
   }
 
@@ -86,10 +87,10 @@ const OfferDialog = ({
     defaultValues: {
       title: offer?.title || "",
       description: offer?.description || "",
-      discount_type: discountType as "percentage" | "amount",
-      discount_value: discountValue,
-      target_type: targetType as "all" | "category" | "product",
-      target_id: targetId,
+      discount_type: initialDiscountType as "percentage" | "amount",
+      discount_value: initialDiscountValue,
+      target_type: initialTargetType as "all" | "category" | "product",
+      target_id: initialTargetId,
       start_date: offer?.start_date
         ? new Date(offer.start_date).toISOString().split("T")[0]
         : new Date().toISOString().split("T")[0],
