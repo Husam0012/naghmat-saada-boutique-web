@@ -63,6 +63,9 @@ const OffersManagement = () => {
         description: "تم حذف العرض بنجاح",
       });
       queryClient.invalidateQueries({ queryKey: ["admin-offers"] });
+      // Also invalidate products query to refresh prices across the app
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["featured-products"] });
     } catch (error) {
       console.error("Error deleting offer:", error);
       toast({
@@ -89,7 +92,13 @@ const OffersManagement = () => {
         });
       }
       setIsDialogOpen(false);
+      
+      // Invalidate relevant queries to refresh data across the app
       queryClient.invalidateQueries({ queryKey: ["admin-offers"] });
+      queryClient.invalidateQueries({ queryKey: ["offers"] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["featured-products"] });
+      
     } catch (error) {
       console.error("Error saving offer:", error);
       toast({

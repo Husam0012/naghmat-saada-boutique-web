@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Order } from "./OrdersManagement";
 import {
   Dialog,
@@ -72,9 +72,11 @@ export function OrderStatusDialog({
   };
   
   // Reset status when order changes
-  if (order?.status !== status && open) {
-    setStatus(order?.status || undefined);
-  }
+  useEffect(() => {
+    if (order && open) {
+      setStatus(order.status || undefined);
+    }
+  }, [order, open]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

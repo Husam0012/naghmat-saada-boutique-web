@@ -9,6 +9,7 @@ import { AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 
 export type Order = Tables<"orders"> & {
   order_items: Tables<"order_items">[];
@@ -17,6 +18,7 @@ export type Order = Tables<"orders"> & {
 const OrdersManagement = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   const { data: orders, isLoading, isError, refetch } = useQuery({
     queryKey: ["adminOrders"],
@@ -33,18 +35,37 @@ const OrdersManagement = () => {
   });
 
   const updateOrderStatus = async (orderId: string, status: string) => {
-    const { error } = await supabase
-      .from("orders")
-      .update({ status })
-      .eq("id", orderId);
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .update({ status })
+        .eq("id", orderId);
 
-    if (error) {
+      if (error) {
+        console.error("Error updating order status:", error);
+        toast({
+          variant: "destructive",
+          title: "خطأ",
+          description: "فشل تحديث حالة الطلب"
+        });
+        return false;
+      }
+
+      await refetch();
+      toast({
+        title: "تم التحديث",
+        description: "تم تحديث حالة الطلب بنجاح"
+      });
+      return true;
+    } catch (error) {
       console.error("Error updating order status:", error);
+      toast({
+        variant: "destructive",
+        title: "خطأ",
+        description: "فشل تحديث حالة الطلب"
+      });
       return false;
     }
-
-    await refetch();
-    return true;
   };
 
   const handleStatusUpdate = (order: Order) => {

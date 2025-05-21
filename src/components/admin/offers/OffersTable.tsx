@@ -40,7 +40,12 @@ const OffersTable = ({ offers, onEdit, onDelete }: OffersTableProps) => {
   );
 
   const formatDate = (dateString: string) => {
-    return format(new Date(dateString), "yyyy-MM-dd");
+    try {
+      return format(new Date(dateString), "yyyy-MM-dd");
+    } catch (error) {
+      console.error("Invalid date:", dateString);
+      return "Invalid date";
+    }
   };
 
   const getStatusBadge = (offer: Offer) => {
