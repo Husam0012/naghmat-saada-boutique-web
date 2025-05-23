@@ -1,20 +1,13 @@
-
 import Layout from "@/components/layout/Layout";
-
 const AboutPage = () => {
-  return (
-    <Layout>
+  return <Layout>
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-display font-bold mb-8 gradient-text text-center">من نحن</h1>
           
           <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-12">
             <div className="aspect-[16/9]">
-              <img
-                src="https://images.unsplash.com/photo-1582562124811-c09040d0a901?auto=format&fit=crop&q=80&w=1000"
-                alt="نغمات السعادة"
-                className="w-full h-full object-cover"
-              />
+              <img src="https://images.unsplash.com/photo-1582562124811-c09040d0a901?auto=format&fit=crop&q=80&w=1000" alt="نغمات السعادة" className="w-full h-full object-cover" />
             </div>
           </div>
           
@@ -24,7 +17,7 @@ const AboutPage = () => {
               مرحبًا بك في متجر نغمات السعادة، وجهتك المثالية للتسوق الإلكتروني النسائي الراقي. تأسس متجرنا في عام 2020 بهدف واحد: تقديم تجربة تسوق استثنائية للمرأة العربية تجمع بين الأناقة والجودة والتميز.
             </p>
             
-            <h2 className="text-2xl font-display font-bold mb-4 text-primary">رؤيتنا</h2>
+            <h2 className="text-2xl font-display font-bold mb-4 text-primary">رؤيتنا حسام</h2>
             <p className="mb-6">
               نسعى لأن نكون الخيار الأول والأمثل للتسوق النسائي في المملكة العربية السعودية والعالم العربي، من خلال تقديم منتجات فريدة تعكس الذوق الرفيع والأناقة العصرية.
             </p>
@@ -57,8 +50,6 @@ const AboutPage = () => {
           </div>
         </div>
       </div>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default AboutPage;
