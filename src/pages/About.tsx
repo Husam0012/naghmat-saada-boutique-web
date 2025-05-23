@@ -12,7 +12,7 @@ const AboutPage = () => {
           </div>
           
           <div className="prose prose-lg max-w-none">
-            <h2 className="text-2xl font-display font-bold mb-4 text-primary">قصتنا</h2>
+            <h2 className="text-2xl font-display font-bold mb-4 text-primary"> قصتناحسام</h2>
             <p className="mb-6">
               مرحبًا بك في متجر نغمات السعادة، وجهتك المثالية للتسوق الإلكتروني النسائي الراقي. تأسس متجرنا في عام 2020 بهدف واحد: تقديم تجربة تسوق استثنائية للمرأة العربية تجمع بين الأناقة والجودة والتميز.
             </p>
