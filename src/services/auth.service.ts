@@ -1,5 +1,5 @@
-
 import { supabase } from "@/integrations/supabase/client";
+import { applyOffersToProducts, getActiveOffers } from "@/utils/offerUtils";
 
 // Simple admin authentication service with hardcoded credentials
 // In a production environment, you would use Supabase Auth or another secure solution
@@ -59,15 +59,39 @@ export const dataService = {
   
   // Products
   getProducts: async () => {
-    const { data, error } = await supabase.from('products').select('*, category_id(id, name)');
-    if (error) throw error;
-    return data;
+    try {
+      const [productsResponse, offersResponse] = await Promise.all([
+        supabase.from('products').select('*, category_id(id, name)'),
+        getActiveOffers()
+      ]);
+      
+      if (productsResponse.error) throw productsResponse.error;
+      
+      // Apply any active offers to the products
+      const productsWithOffers = applyOffersToProducts(productsResponse.data, offersResponse);
+      return productsWithOffers;
+    } catch (error) {
+      console.error("Error fetching products with offers:", error);
+      throw error;
+    }
   },
   
   getProductById: async (id: string) => {
-    const { data, error } = await supabase.from('products').select('*, category_id(id, name)').eq('id', id).single();
-    if (error) throw error;
-    return data;
+    try {
+      const [productResponse, offersResponse] = await Promise.all([
+        supabase.from('products').select('*, category_id(id, name)').eq('id', id).single(),
+        getActiveOffers()
+      ]);
+      
+      if (productResponse.error) throw productResponse.error;
+      
+      // Apply any active offers to the product
+      const productWithOffers = applyOffersToProduct(productResponse.data, offersResponse);
+      return productWithOffers;
+    } catch (error) {
+      console.error("Error fetching product with offers:", error);
+      throw error;
+    }
   },
   
   createProduct: async (product: any) => {

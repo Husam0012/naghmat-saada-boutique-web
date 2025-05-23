@@ -6,11 +6,12 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, ArrowRight, Check } from "lucide-react";
+import { ShoppingCart, ArrowRight, Check, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { addToCart } from "@/utils/cartUtils";
+import { ProductWithOffer } from "@/utils/offerUtils";
 
 interface Product {
   id: string;
@@ -220,6 +221,16 @@ const ProductDetailsPage = () => {
               )}
             </div>
             
+            {/* Offer Information */}
+            {(product as ProductWithOffer).applied_offer && (
+              <div className="mt-2 flex items-center text-green-600">
+                <Tag className="h-4 w-4 mr-1" />
+                <span className="text-sm">
+                  {(product as ProductWithOffer).applied_offer?.title} - ينتهي في {new Date((product as ProductWithOffer).applied_offer?.end_date || "").toLocaleDateString('ar-SA')}
+                </span>
+              </div>
+            )}
+            
             {/* Stock Status */}
             <div className="flex items-center mt-4">
               {product.in_stock ? (
@@ -301,7 +312,7 @@ const ProductDetailsPage = () => {
                   "جاري الإضافة..."
                 ) : (
                   <>
-                    <ShoppingCart className="mr-2 h-5 w-5" />
+                    <ShoppingCart className="mr-2 h-5 w-4" />
                     إضافة إلى السلة
                   </>
                 )}

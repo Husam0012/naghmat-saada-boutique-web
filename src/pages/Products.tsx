@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { useQuery } from "@tanstack/react-query";
@@ -15,20 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-
-interface Product {
-  id: string;
-  name: string;
-  description: string | null;
-  price: number;
-  old_price: number | null;
-  images: string[] | null;
-  category_id: {
-    id: string;
-    name: string;
-  };
-  in_stock: boolean;
-}
+import { ProductWithOffer } from "@/utils/offerUtils";
 
 interface Category {
   id: string;
@@ -55,7 +41,7 @@ const ProductsPage = () => {
     queryFn: dataService.getCategories,
   });
 
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ProductWithOffer[]>([]);
 
   useEffect(() => {
     // Scroll to top when page loads
@@ -64,7 +50,7 @@ const ProductsPage = () => {
     if (productsData) {
       // Find the highest price for the slider
       const highestPrice = Math.max(
-        ...productsData.map((product: Product) => product.price)
+        ...productsData.map((product: ProductWithOffer) => product.price)
       );
       setMaxPrice(highestPrice);
       setPriceRange([0, highestPrice]);
@@ -78,31 +64,31 @@ const ProductsPage = () => {
       // Apply category filter
       if (selectedCategory) {
         filtered = filtered.filter(
-          (product: Product) => product.category_id?.id === selectedCategory
+          (product: ProductWithOffer) => product.category_id?.id === selectedCategory
         );
       }
 
       // Apply price range filter
       filtered = filtered.filter(
-        (product: Product) =>
+        (product: ProductWithOffer) =>
           product.price >= priceRange[0] && product.price <= priceRange[1]
       );
 
       // Apply sorting
       switch (sortOption) {
         case "price-asc":
-          filtered.sort((a: Product, b: Product) => a.price - b.price);
+          filtered.sort((a: ProductWithOffer, b: ProductWithOffer) => a.price - b.price);
           break;
         case "price-desc":
-          filtered.sort((a: Product, b: Product) => b.price - a.price);
+          filtered.sort((a: ProductWithOffer, b: ProductWithOffer) => b.price - a.price);
           break;
         case "name-asc":
-          filtered.sort((a: Product, b: Product) =>
+          filtered.sort((a: ProductWithOffer, b: ProductWithOffer) =>
             a.name.localeCompare(b.name)
           );
           break;
         case "name-desc":
-          filtered.sort((a: Product, b: Product) =>
+          filtered.sort((a: ProductWithOffer, b: ProductWithOffer) =>
             b.name.localeCompare(a.name)
           );
           break;
@@ -231,7 +217,7 @@ const ProductsPage = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product: Product) => (
+                {filteredProducts.map((product: ProductWithOffer) => (
                   <Link to={`/product/${product.id}`} key={product.id}>
                     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
                       <div className="h-48 overflow-hidden relative">
@@ -242,7 +228,7 @@ const ProductsPage = () => {
                         />
                         {product.old_price && (
                           <Badge className="absolute top-2 right-2 bg-red-500">
-                            خصم
+                            {product.applied_offer?.title || "خصم"}
                           </Badge>
                         )}
                       </div>
