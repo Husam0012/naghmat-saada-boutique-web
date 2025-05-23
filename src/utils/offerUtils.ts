@@ -12,6 +12,11 @@ export type ProductWithOffer = Tables<"products"> & {
   original_price?: number;
 };
 
+// Update the Offer type in offerUtils for completeness
+export type OfferWithTarget = Offer & {
+  target_type?: "all" | "category" | "product";
+};
+
 /**
  * Check if an offer is currently active based on start and end dates
  */
@@ -82,21 +87,27 @@ export const applyOffersToProduct = (
   const applicableOffers = offers.filter(offer => {
     if (!isOfferActive(offer)) return false;
 
+    // Cast to our extended type that includes target_type
+    const offerWithTarget = offer as OfferWithTarget;
+
     // Check if offer applies to all products (no target specified)
-    if (!offer.target_type || offer.target_type === "all") return true;
+    if (!offerWithTarget.target_type || offerWithTarget.target_type === "all") return true;
 
     // Check if offer applies to this product's category
     if (
-      offer.target_type === "category" &&
-      offer.applies_to_category_id?.id === product.category_id?.id
+      offerWithTarget.target_type === "category" &&
+      offer.applies_to_category_id &&
+      product.category_id &&
+      offer.applies_to_category_id.id === product.category_id
     ) {
       return true;
     }
 
     // Check if offer applies directly to this product
     if (
-      offer.target_type === "product" &&
-      offer.applies_to_product_id?.id === product.id
+      offerWithTarget.target_type === "product" &&
+      offer.applies_to_product_id &&
+      offer.applies_to_product_id.id === product.id
     ) {
       return true;
     }

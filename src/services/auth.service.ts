@@ -1,5 +1,6 @@
+
 import { supabase } from "@/integrations/supabase/client";
-import { applyOffersToProducts, getActiveOffers } from "@/utils/offerUtils";
+import { applyOffersToProducts, applyOffersToProduct, getActiveOffers } from "@/utils/offerUtils";
 
 // Simple admin authentication service with hardcoded credentials
 // In a production environment, you would use Supabase Auth or another secure solution
