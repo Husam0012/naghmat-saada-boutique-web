@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { applyOffersToProducts, applyOffersToProduct, getActiveOffers } from "@/utils/offerUtils";
 
@@ -22,6 +21,24 @@ export const adminAuth = {
 
   isAuthenticated: () => {
     return localStorage.getItem('isAdminAuthenticated') === 'true';
+  },
+  
+  // Verify current password
+  verifyPassword: async (password: string) => {
+    // In a real app, this would verify against a secure storage
+    return { success: password === 'Admin' };
+  },
+  
+  // Update password
+  updatePassword: async (newPassword: string) => {
+    try {
+      // In a real app, this would securely update the password
+      localStorage.setItem('adminPassword', newPassword);
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating password:", error);
+      return { success: false, error: "Failed to update password" };
+    }
   }
 };
 
@@ -278,6 +295,81 @@ export const dataService = {
         .select();
       if (error) throw error;
       return data;
+    }
+  },
+  
+  // Store Settings
+  getStoreSettings: async () => {
+    try {
+      // In a real app, this would fetch from a settings table in Supabase
+      // For demo purposes, we'll use localStorage
+      const settingsStr = localStorage.getItem('storeSettings');
+      if (settingsStr) {
+        return JSON.parse(settingsStr);
+      }
+      
+      // Default settings
+      return {
+        store_name: "نغمات السعادة",
+        contact_email: "info@naghmat-alsaada.com",
+        contact_phone: "967770740731+",
+        address: "حي الملقا، الرياض\nالمملكة العربية السعودية",
+        social_instagram: "",
+        social_facebook: "",
+        social_twitter: "",
+        primary_color: "#F48FB1",
+        secondary_color: "#FFD180",
+        logo_url: "/lovable-uploads/e45d98e8-4977-4f11-942d-aa0807b70a3c.png",
+        favicon_url: "/favicon.ico"
+      };
+    } catch (error) {
+      console.error("Error fetching store settings:", error);
+      throw error;
+    }
+  },
+  
+  updateStoreSettings: async (settings: any) => {
+    try {
+      // In a real app, this would update a settings table in Supabase
+      // For demo purposes, we'll use localStorage
+      
+      // Get current settings
+      const currentSettingsStr = localStorage.getItem('storeSettings');
+      const currentSettings = currentSettingsStr ? JSON.parse(currentSettingsStr) : {};
+      
+      // Merge with new settings
+      const updatedSettings = { ...currentSettings, ...settings };
+      
+      // Save to localStorage
+      localStorage.setItem('storeSettings', JSON.stringify(updatedSettings));
+      
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating store settings:", error);
+      throw error;
+    }
+  },
+  
+  // Upload store images (logo, favicon)
+  uploadStoreImage: async (file: File, type: 'logo' | 'favicon') => {
+    try {
+      // In a real app with Supabase, this would upload to storage bucket
+      // For demo purposes, we'll use a URL.createObjectURL and localStorage
+      
+      const fileUrl = URL.createObjectURL(file);
+      
+      // In a real app, here we would upload to Supabase storage
+      // const { data, error } = await supabase.storage
+      //  .from('store-assets')
+      //  .upload(`${type}/${file.name}`, file);
+      
+      return {
+        success: true,
+        url: fileUrl
+      };
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
     }
   }
 };
