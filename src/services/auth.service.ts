@@ -4,8 +4,59 @@ import bcrypt from 'bcryptjs';
 
 // Admin authentication service using Supabase database
 export const adminAuth = {
+  // Create default admin user if it doesn't exist
+  createDefaultAdmin: async () => {
+    try {
+      console.log("Checking for default admin user...");
+      
+      // Check if default admin exists
+      const { data: existingAdmin } = await supabase
+        .from('admin_users')
+        .select('id, username')
+        .eq('username', 'Admin')
+        .single();
+
+      if (existingAdmin) {
+        console.log("Default admin user already exists:", existingAdmin);
+        return { success: true, message: 'Default admin already exists' };
+      }
+
+      console.log("Creating default admin user...");
+      
+      // Create default admin with username "Admin" and password "Admin"
+      const saltRounds = 10;
+      const defaultPassword = 'Admin';
+      const hashedPassword = await bcrypt.hash(defaultPassword, saltRounds);
+
+      const { data, error } = await supabase
+        .from('admin_users')
+        .insert([{
+          username: 'Admin',
+          password_hash: hashedPassword
+        }])
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error creating default admin:", error);
+        return { success: false, error: 'فشل في إنشاء المستخدم الافتراضي' };
+      }
+
+      console.log("Default admin user created successfully:", data);
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in createDefaultAdmin:", error);
+      return { success: false, error: 'حدث خطأ أثناء إنشاء المستخدم الافتراضي' };
+    }
+  },
+
   login: async (username: string, password: string) => {
     try {
+      console.log("Attempting login for username:", username);
+      
+      // First, ensure default admin exists
+      await adminAuth.createDefaultAdmin();
+      
       // Get admin user from database
       const { data: adminUser, error } = await supabase
         .from('admin_users')
@@ -13,17 +64,27 @@ export const adminAuth = {
         .eq('username', username)
         .single();
 
+      console.log("Database query result:", { adminUser, error });
+
       if (error || !adminUser) {
+        console.log("User not found or database error:", error);
         return { success: false, error: 'اسم المستخدم أو كلمة المرور غير صحيحة' };
       }
 
+      console.log("Found admin user:", { id: adminUser.id, username: adminUser.username });
+      console.log("Attempting password verification...");
+      
       // Verify password
       const isPasswordValid = await bcrypt.compare(password, adminUser.password_hash);
+      console.log("Password verification result:", isPasswordValid);
       
       if (!isPasswordValid) {
+        console.log("Password verification failed");
         return { success: false, error: 'اسم المستخدم أو كلمة المرور غير صحيحة' };
       }
 
+      console.log("Login successful, storing session...");
+      
       // Store admin session
       localStorage.setItem('isAdminAuthenticated', 'true');
       localStorage.setItem('adminUserId', adminUser.id);
@@ -33,6 +94,45 @@ export const adminAuth = {
     } catch (error) {
       console.error("Login error:", error);
       return { success: false, error: 'حدث خطأ أثناء تسجيل الدخول' };
+    }
+  },
+
+  register: async (username: string, password: string) => {
+    try {
+      // Check if username already exists
+      const { data: existingUser } = await supabase
+        .from('admin_users')
+        .select('id')
+        .eq('username', username)
+        .single();
+
+      if (existingUser) {
+        return { success: false, error: 'اسم المستخدم مستخدم بالفعل' };
+      }
+
+      // Hash the password
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+      // Create new admin user
+      const { data, error } = await supabase
+        .from('admin_users')
+        .insert([{
+          username: username,
+          password_hash: hashedPassword
+        }])
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Registration error:", error);
+        return { success: false, error: 'فشل في إنشاء الحساب' };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      console.error("Registration error:", error);
+      return { success: false, error: 'حدث خطأ أثناء إنشاء الحساب' };
     }
   },
 
