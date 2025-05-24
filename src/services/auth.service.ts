@@ -1,43 +1,160 @@
 import { supabase } from "@/integrations/supabase/client";
 import { applyOffersToProducts, applyOffersToProduct, getActiveOffers } from "@/utils/offerUtils";
+import bcrypt from 'bcryptjs';
 
-// Simple admin authentication service with hardcoded credentials
-// In a production environment, you would use Supabase Auth or another secure solution
+// Admin authentication service using Supabase database
 export const adminAuth = {
   login: async (username: string, password: string) => {
-    // For demo purposes only - in production this would use proper authentication
-    if (username === 'Admin' && password === 'Admin') {
-      // Store admin session in local storage
+    try {
+      // Get admin user from database
+      const { data: adminUser, error } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('username', username)
+        .single();
+
+      if (error || !adminUser) {
+        return { success: false, error: 'اسم المستخدم أو كلمة المرور غير صحيحة' };
+      }
+
+      // Verify password
+      const isPasswordValid = await bcrypt.compare(password, adminUser.password_hash);
+      
+      if (!isPasswordValid) {
+        return { success: false, error: 'اسم المستخدم أو كلمة المرور غير صحيحة' };
+      }
+
+      // Store admin session
       localStorage.setItem('isAdminAuthenticated', 'true');
+      localStorage.setItem('adminUserId', adminUser.id);
+      localStorage.setItem('adminUsername', adminUser.username);
+      
       return { success: true };
+    } catch (error) {
+      console.error("Login error:", error);
+      return { success: false, error: 'حدث خطأ أثناء تسجيل الدخول' };
     }
-    return { success: false, error: 'اسم المستخدم أو كلمة المرور غير صحيحة' };
   },
 
   logout: () => {
     localStorage.removeItem('isAdminAuthenticated');
+    localStorage.removeItem('adminUserId');
+    localStorage.removeItem('adminUsername');
     return true;
   },
 
   isAuthenticated: () => {
     return localStorage.getItem('isAdminAuthenticated') === 'true';
   },
+
+  getCurrentAdminId: () => {
+    return localStorage.getItem('adminUserId');
+  },
+
+  getCurrentAdminUsername: () => {
+    return localStorage.getItem('adminUsername');
+  },
   
   // Verify current password
   verifyPassword: async (password: string) => {
-    // In a real app, this would verify against a secure storage
-    return { success: password === 'Admin' };
+    try {
+      const adminId = adminAuth.getCurrentAdminId();
+      if (!adminId) {
+        return { success: false, error: 'غير مصرح بالدخول' };
+      }
+
+      const { data: adminUser, error } = await supabase
+        .from('admin_users')
+        .select('password_hash')
+        .eq('id', adminId)
+        .single();
+
+      if (error || !adminUser) {
+        return { success: false, error: 'فشل في التحقق من كلمة المرور' };
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, adminUser.password_hash);
+      return { success: isPasswordValid };
+    } catch (error) {
+      console.error("Error verifying password:", error);
+      return { success: false, error: "خطأ في التحقق من كلمة المرور" };
+    }
   },
   
   // Update password
   updatePassword: async (newPassword: string) => {
     try {
-      // In a real app, this would securely update the password
-      localStorage.setItem('adminPassword', newPassword);
+      const adminId = adminAuth.getCurrentAdminId();
+      if (!adminId) {
+        return { success: false, error: 'غير مصرح بالدخول' };
+      }
+
+      // Hash the new password
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+      // Update password in database
+      const { error } = await supabase
+        .from('admin_users')
+        .update({ 
+          password_hash: hashedPassword,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', adminId);
+
+      if (error) {
+        console.error("Error updating password:", error);
+        return { success: false, error: "فشل في تحديث كلمة المرور" };
+      }
+
       return { success: true };
     } catch (error) {
       console.error("Error updating password:", error);
-      return { success: false, error: "Failed to update password" };
+      return { success: false, error: "فشل في تحديث كلمة المرور" };
+    }
+  },
+
+  // Update username
+  updateUsername: async (newUsername: string) => {
+    try {
+      const adminId = adminAuth.getCurrentAdminId();
+      if (!adminId) {
+        return { success: false, error: 'غير مصرح بالدخول' };
+      }
+
+      // Check if username already exists
+      const { data: existingUser } = await supabase
+        .from('admin_users')
+        .select('id')
+        .eq('username', newUsername)
+        .neq('id', adminId)
+        .single();
+
+      if (existingUser) {
+        return { success: false, error: 'اسم المستخدم مستخدم بالفعل' };
+      }
+
+      // Update username in database
+      const { error } = await supabase
+        .from('admin_users')
+        .update({ 
+          username: newUsername,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', adminId);
+
+      if (error) {
+        console.error("Error updating username:", error);
+        return { success: false, error: "فشل في تحديث اسم المستخدم" };
+      }
+
+      // Update local storage
+      localStorage.setItem('adminUsername', newUsername);
+      
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating username:", error);
+      return { success: false, error: "فشل في تحديث اسم المستخدم" };
     }
   }
 };

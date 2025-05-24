@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PasswordSettings from "./PasswordSettings";
+import UsernameSettings from "./UsernameSettings";
 import ContactSettings from "./ContactSettings";
 import BrandingSettings from "./BrandingSettings";
 
@@ -21,14 +22,19 @@ const SettingsManagement = () => {
         onValueChange={setActiveTab}
         className="w-full"
       >
-        <TabsList className="grid grid-cols-3 mb-8">
+        <TabsList className="grid grid-cols-4 mb-8">
           <TabsTrigger value="password">كلمة المرور</TabsTrigger>
+          <TabsTrigger value="username">اسم المستخدم</TabsTrigger>
           <TabsTrigger value="contact">معلومات الاتصال</TabsTrigger>
           <TabsTrigger value="branding">العلامة التجارية</TabsTrigger>
         </TabsList>
         
         <TabsContent value="password" className="space-y-4">
           <PasswordSettings />
+        </TabsContent>
+        
+        <TabsContent value="username" className="space-y-4">
+          <UsernameSettings />
         </TabsContent>
         
         <TabsContent value="contact" className="space-y-4">
