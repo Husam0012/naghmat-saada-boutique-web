@@ -18,7 +18,25 @@ export const adminAuth = {
 
       if (existingAdmin) {
         console.log("Default admin user already exists:", existingAdmin);
-        return { success: true, message: 'Default admin already exists' };
+        
+        // Fix password hash issue - update the existing admin with correct password
+        console.log("Updating admin password hash...");
+        const saltRounds = 10;
+        const defaultPassword = 'Admin';
+        const hashedPassword = await bcrypt.hash(defaultPassword, saltRounds);
+        
+        const { error: updateError } = await supabase
+          .from('admin_users')
+          .update({ password_hash: hashedPassword })
+          .eq('username', 'Admin');
+          
+        if (updateError) {
+          console.error("Error updating admin password:", updateError);
+        } else {
+          console.log("Admin password hash updated successfully");
+        }
+        
+        return { success: true, message: 'Default admin exists and password updated' };
       }
 
       console.log("Creating default admin user...");
@@ -54,7 +72,7 @@ export const adminAuth = {
     try {
       console.log("Attempting login for username:", username);
       
-      // First, ensure default admin exists
+      // First, ensure default admin exists and has correct password
       await adminAuth.createDefaultAdmin();
       
       // Get admin user from database
