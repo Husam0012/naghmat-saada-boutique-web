@@ -28,6 +28,22 @@ interface OrderStatusDialogProps {
   onUpdateStatus: (orderId: string, status: string) => Promise<boolean>;
 }
 
+const formatOrderNumber = (orderNumber: string) => {
+  // Remove ORD- prefix if it exists and return just the numeric part
+  return orderNumber.replace(/^ORD-/, '');
+};
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  }).format(date);
+};
+
 export function OrderStatusDialog({
   open,
   onOpenChange,
@@ -80,7 +96,7 @@ export function OrderStatusDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="text-center">تحديث حالة الطلب</DialogTitle>
         </DialogHeader>
@@ -90,7 +106,13 @@ export function OrderStatusDialog({
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">رقم الطلب</Label>
               <div className="col-span-3">
-                <span className="font-medium">{order.order_number}</span>
+                <span className="font-medium">{formatOrderNumber(order.order_number)}</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">تاريخ الطلب</Label>
+              <div className="col-span-3">
+                <span className="text-sm text-muted-foreground">{formatDate(order.created_at)}</span>
               </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -98,6 +120,14 @@ export function OrderStatusDialog({
               <div className="col-span-3">
                 <p>{order.customer_name}</p>
                 <p className="text-sm text-muted-foreground">{order.customer_phone}</p>
+                <p className="text-sm text-muted-foreground">{order.customer_email}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">عنوان الشحن</Label>
+              <div className="col-span-3">
+                <p className="text-sm">{order.address}</p>
+                <p className="text-sm text-muted-foreground">{order.city}</p>
               </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">

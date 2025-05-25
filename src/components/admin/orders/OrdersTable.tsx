@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Order } from "./OrdersManagement";
 import {
@@ -27,13 +28,18 @@ interface OrdersTableProps {
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
-  return new Intl.DateTimeFormat('ar-SA', {
+  return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
   }).format(date);
+};
+
+const formatOrderNumber = (orderNumber: string) => {
+  // Remove ORD- prefix if it exists and return just the numeric part
+  return orderNumber.replace(/^ORD-/, '');
 };
 
 const getStatusBadge = (status: string) => {
@@ -75,7 +81,8 @@ export function OrdersTable({ orders, onUpdateStatus }: OrdersTableProps) {
       order.order_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customer_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customer_phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.customer_email.toLowerCase().includes(searchQuery.toLowerCase());
+      order.customer_email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.address.toLowerCase().includes(searchQuery.toLowerCase());
       
     const matchesStatus = statusFilter === null || order.status === statusFilter;
     
@@ -89,8 +96,8 @@ export function OrdersTable({ orders, onUpdateStatus }: OrdersTableProps) {
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="ابحث باسم العميل، رقم الهاتف، البريد الإلكتروني أو رقم الطلب..."
-            className="pl-8 w-full sm:w-[300px]"
+            placeholder="ابحث باسم العميل، رقم الهاتف، البريد الإلكتروني، رقم الطلب أو العنوان..."
+            className="pl-8 w-full sm:w-[350px]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -127,6 +134,7 @@ export function OrdersTable({ orders, onUpdateStatus }: OrdersTableProps) {
               <TableHead className="hidden md:table-cell">رقم الهاتف</TableHead>
               <TableHead className="hidden md:table-cell">البريد الإلكتروني</TableHead>
               <TableHead className="hidden sm:table-cell">المدينة</TableHead>
+              <TableHead className="hidden lg:table-cell">عنوان الشحن</TableHead>
               <TableHead className="hidden lg:table-cell">تاريخ الطلب</TableHead>
               <TableHead>المبلغ</TableHead>
               <TableHead>الحالة</TableHead>
@@ -136,18 +144,21 @@ export function OrdersTable({ orders, onUpdateStatus }: OrdersTableProps) {
           <TableBody>
             {filteredOrders.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} className="text-center h-24">
+                <TableCell colSpan={10} className="text-center h-24">
                   لا توجد طلبات متاحة
                 </TableCell>
               </TableRow>
             ) : (
               filteredOrders.map((order) => (
                 <TableRow key={order.id}>
-                  <TableCell className="font-medium">{order.order_number}</TableCell>
+                  <TableCell className="font-medium">{formatOrderNumber(order.order_number)}</TableCell>
                   <TableCell>{order.customer_name}</TableCell>
                   <TableCell className="hidden md:table-cell">{order.customer_phone}</TableCell>
                   <TableCell className="hidden md:table-cell">{order.customer_email}</TableCell>
                   <TableCell className="hidden sm:table-cell">{order.city}</TableCell>
+                  <TableCell className="hidden lg:table-cell max-w-[200px] truncate" title={order.address}>
+                    {order.address}
+                  </TableCell>
                   <TableCell className="hidden lg:table-cell">{formatDate(order.created_at)}</TableCell>
                   <TableCell>{order.total_amount} ريال</TableCell>
                   <TableCell>
