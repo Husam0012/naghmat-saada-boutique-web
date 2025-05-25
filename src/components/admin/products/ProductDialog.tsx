@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ImageUpload from "../shared/ImageUpload";
 
 interface Category {
   id: string;
@@ -46,7 +47,7 @@ const productSchema = z.object({
   category_id: z.string().optional(),
   in_stock: z.boolean().default(true),
   featured: z.boolean().default(false),
-  images: z.array(z.string()).default([]),
+  images: z.string().default(""),
 });
 
 const ProductDialog = ({
@@ -68,7 +69,7 @@ const ProductDialog = ({
       category_id: undefined,
       in_stock: true,
       featured: false,
-      images: [],
+      images: "",
     },
   });
 
@@ -82,7 +83,7 @@ const ProductDialog = ({
         category_id: product.category_id?.id || undefined,
         in_stock: product.in_stock !== false,
         featured: !!product.featured,
-        images: product.images || [],
+        images: Array.isArray(product.images) ? product.images.join(',') : (product.images || ""),
       });
     } else {
       form.reset({
@@ -93,18 +94,23 @@ const ProductDialog = ({
         category_id: undefined,
         in_stock: true,
         featured: false,
-        images: [],
+        images: "",
       });
     }
   }, [product, form]);
 
   const onSubmit = (data: z.infer<typeof productSchema>) => {
-    onSave(data);
+    // Convert images string back to array for saving
+    const formattedData = {
+      ...data,
+      images: data.images ? data.images.split(',').filter(url => url.trim()) : []
+    };
+    onSave(formattedData);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "تعديل المنتج" : "إضافة منتج جديد"}
@@ -221,6 +227,28 @@ const ProductDialog = ({
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="images"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <ImageUpload
+                      label="صور المنتج"
+                      value={field.value}
+                      onChange={field.onChange}
+                      multiple={true}
+                      maxFiles={5}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    يمكنك رفع حتى 5 صور للمنتج
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -264,20 +292,6 @@ const ProductDialog = ({
                 )}
               />
             </div>
-
-            <FormField
-              control={form.control}
-              name="images"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>صور المنتج</FormLabel>
-                  <FormDescription>
-                    ستتم إضافة دعم رفع الصور في الإصدار القادم. حالياً يمكن إضافة روابط للصور المستضافة خارجياً.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <div className="flex justify-end space-x-2 space-x-reverse pt-4">
               <Button

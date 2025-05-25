@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { dataService } from "@/services/auth.service";
+import ImageUpload from "../shared/ImageUpload";
 
 interface CategoryDialogProps {
   open: boolean;
@@ -181,11 +182,11 @@ const CategoryDialog = ({
               name="image_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>رابط الصورة</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="أدخل رابط صورة التصنيف (اختياري)"
-                      {...field}
+                    <ImageUpload
+                      label="صورة التصنيف"
+                      value={field.value || ""}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />
