@@ -74,7 +74,7 @@ const OrderTracking = () => {
                       <FormItem>
                         <FormLabel>رقم الطلب</FormLabel>
                         <FormControl>
-                          <Input placeholder="مثال: ORD-123456" {...field} />
+                          <Input placeholder="مثال: 123456" {...field} />
                         </FormControl>
                         <FormDescription>
                           يمكنك العثور على رقم الطلب في بريدك الإلكتروني الذي استلمته بعد تقديم الطلب.

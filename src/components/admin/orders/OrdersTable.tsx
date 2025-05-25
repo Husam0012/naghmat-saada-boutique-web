@@ -37,11 +37,6 @@ const formatDate = (dateString: string) => {
   }).format(date);
 };
 
-const formatOrderNumber = (orderNumber: string) => {
-  // Remove ORD- prefix if it exists and return just the numeric part
-  return orderNumber.replace(/^ORD-/, '');
-};
-
 const getStatusBadge = (status: string) => {
   switch (status) {
     case "processing":
@@ -151,7 +146,7 @@ export function OrdersTable({ orders, onUpdateStatus }: OrdersTableProps) {
             ) : (
               filteredOrders.map((order) => (
                 <TableRow key={order.id}>
-                  <TableCell className="font-medium">{formatOrderNumber(order.order_number)}</TableCell>
+                  <TableCell className="font-medium">{order.order_number}</TableCell>
                   <TableCell>{order.customer_name}</TableCell>
                   <TableCell className="hidden md:table-cell">{order.customer_phone}</TableCell>
                   <TableCell className="hidden md:table-cell">{order.customer_email}</TableCell>

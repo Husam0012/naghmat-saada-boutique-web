@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -74,10 +73,10 @@ const Checkout = () => {
     setIsSubmitting(true);
 
     try {
-      // Generate a random order number
-      const orderNumber = `ORD-${Math.floor(Math.random() * 1000000)
+      // Generate a random order number (digits only, no ORD- prefix)
+      const orderNumber = Math.floor(Math.random() * 1000000)
         .toString()
-        .padStart(6, "0")}`;
+        .padStart(6, "0");
 
       // Calculate total amount
       const totalAmount = cartItems.reduce(
