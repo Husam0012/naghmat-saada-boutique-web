@@ -2,29 +2,15 @@
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import ImageUpload from "../shared/ImageUpload";
+import { Form } from "@/components/ui/form";
+import ProductBasicFields from "./ProductBasicFields";
+import ProductPriceFields from "./ProductPriceFields";
+import ProductCategoryField from "./ProductCategoryField";
+import ProductImageField from "./ProductImageField";
+import ProductStatusFields from "./ProductStatusFields";
+import { productSchema, ProductFormData } from "./productSchema";
 
 interface Category {
   id: string;
@@ -39,17 +25,6 @@ interface ProductDialogProps {
   onSave: (data: any) => void;
 }
 
-const productSchema = z.object({
-  name: z.string().min(3, "اسم المنتج يجب أن يكون على الأقل 3 أحرف"),
-  price: z.coerce.number().min(0, "السعر يجب أن يكون أكبر من أو يساوي صفر"),
-  old_price: z.coerce.number().min(0).optional().nullable(),
-  description: z.string().optional(),
-  category_id: z.string().optional(),
-  in_stock: z.boolean().default(true),
-  featured: z.boolean().default(false),
-  images: z.string().default(""),
-});
-
 const ProductDialog = ({
   open,
   onOpenChange,
@@ -59,7 +34,7 @@ const ProductDialog = ({
 }: ProductDialogProps) => {
   const isEditing = !!product;
 
-  const form = useForm<z.infer<typeof productSchema>>({
+  const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: "",
@@ -99,7 +74,7 @@ const ProductDialog = ({
     }
   }, [product, form]);
 
-  const onSubmit = (data: z.infer<typeof productSchema>) => {
+  const onSubmit = (data: ProductFormData) => {
     // Convert images string back to array for saving
     const formattedData = {
       ...data,
@@ -119,179 +94,11 @@ const ProductDialog = ({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>اسم المنتج</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="أدخل اسم المنتج" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>السعر</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        {...field}
-                        placeholder="أدخل السعر"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="old_price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>السعر القديم (اختياري)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={field.value || ""}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          field.onChange(value === "" ? null : parseFloat(value));
-                        }}
-                        placeholder="أدخل السعر القديم"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      للتخفيضات والعروض
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>الوصف</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      rows={3}
-                      {...field}
-                      placeholder="أدخل وصف المنتج"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="category_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>التصنيف</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="اختر تصنيف" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="images"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <ImageUpload
-                      label="صور المنتج"
-                      value={field.value}
-                      onChange={field.onChange}
-                      multiple={true}
-                      maxFiles={5}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    يمكنك رفع حتى 5 صور للمنتج
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="in_stock"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-reverse space-x-3 space-y-0 rounded-md border p-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>متوفر</FormLabel>
-                      <FormDescription>
-                        هل المنتج متوفر في المخزون؟
-                      </FormDescription>
-                    </div>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="featured"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-reverse space-x-3 space-y-0 rounded-md border p-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>مميز</FormLabel>
-                      <FormDescription>
-                        عرض المنتج في قسم المنتجات المميزة
-                      </FormDescription>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </div>
+            <ProductBasicFields form={form} />
+            <ProductPriceFields form={form} />
+            <ProductCategoryField form={form} categories={categories} />
+            <ProductImageField form={form} />
+            <ProductStatusFields form={form} />
 
             <div className="flex justify-end space-x-2 space-x-reverse pt-4">
               <Button
