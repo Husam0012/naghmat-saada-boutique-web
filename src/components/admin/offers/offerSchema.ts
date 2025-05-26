@@ -11,6 +11,7 @@ export const offerSchema = z.object({
   start_date: z.string().min(1, { message: "تاريخ البدء مطلوب" }),
   end_date: z.string().min(1, { message: "تاريخ الانتهاء مطلوب" }),
   is_active: z.boolean().default(true),
+  offer_image_url: z.string().optional(),
 });
 
 export type OfferFormValues = z.infer<typeof offerSchema>;

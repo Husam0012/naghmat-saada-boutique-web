@@ -53,6 +53,7 @@ export const useOfferForm = ({ open, offer, onSave }: UseOfferFormProps) => {
         ? new Date(offer.end_date).toISOString().split("T")[0]
         : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
       is_active: offer?.is_active !== false,
+      offer_image_url: offer?.offer_image_url || "",
     };
   };
 
@@ -86,6 +87,7 @@ export const useOfferForm = ({ open, offer, onSave }: UseOfferFormProps) => {
         start_date: new Date(offer.start_date).toISOString().split("T")[0],
         end_date: new Date(offer.end_date).toISOString().split("T")[0],
         is_active: offer.is_active !== false,
+        offer_image_url: offer.offer_image_url || "",
       });
     } else if (open) {
       form.reset({
@@ -100,6 +102,7 @@ export const useOfferForm = ({ open, offer, onSave }: UseOfferFormProps) => {
           .toISOString()
           .split("T")[0],
         is_active: true,
+        offer_image_url: "",
       });
     }
   }, [open, offer, form]);
@@ -113,6 +116,7 @@ export const useOfferForm = ({ open, offer, onSave }: UseOfferFormProps) => {
       start_date: values.start_date,
       end_date: values.end_date,
       is_active: values.is_active,
+      offer_image_url: values.offer_image_url || null,
     };
 
     // Set discount fields
