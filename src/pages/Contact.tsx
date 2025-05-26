@@ -86,10 +86,10 @@ const ContactPage = () => {
                   <MapPin className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="font-bold text-lg mb-2">العنوان</h3>
-                <p className="text-muted-foreground">زورينا في موقعنا</p>
+                
                 <address className="mt-2 font-medium not-italic">
-                  حي الملقا، الرياض<br />
-                  المملكة العربية السعودية
+                  صنعاء<br />
+                الجمهورية اليمنية
                 </address>
               </CardContent>
             </Card>
@@ -151,19 +151,19 @@ const ContactPage = () => {
               </form>
             </div>
 
-            <div className="rounded-lg overflow-hidden h-96 shadow-md border border-border">
-              {/* This is a placeholder for a Google Map - would need an API key in a real app */}
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3624.4129329888826!2d46.626756684652574!3d24.714889013620137!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2f0f32caa17d2d%3A0xb5ea055402b76211!2sAlmalqa%2C%20Riyadh%20Saudi%20Arabia!5e0!3m2!1sen!2sus!4v1621461895316!5m2!1sen!2sus"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen={false}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="خريطة موقع المتجر"
-              />
-            </div>
+           <div className="rounded-lg overflow-hidden h-96 shadow-md border border-border">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3624.4129329888826!2d44.20667!3d15.35472!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x161e8e2d03a7e7e1%3A0x90bddef6a5bb328c!2z2KfZhNin2YTYp9mG2YjZitmE2YrYqQ!5e0!3m2!1sar!2s!4v1716715942450!5m2!1sar!2s"
+    width="100%"
+    height="100%"
+    style={{ border: 0 }}
+    allowFullScreen={true}
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+    title="خريطة موقع الشركة"
+  />
+</div>
+
           </div>
         </div>
       </div>

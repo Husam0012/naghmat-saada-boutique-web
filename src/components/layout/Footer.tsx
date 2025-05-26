@@ -17,10 +17,10 @@ interface StoreSettings {
 
 const Footer = () => {
   const [settings, setSettings] = useState<StoreSettings>({
-    store_name: "نغمات السعادة",
+    store_name: "متجرك ستور",
     contact_email: "info@naghmat-alsaada.com",
-    contact_phone: "967770740731+",
-    address: "حي الملقا، الرياض\nالمملكة العربية السعودية",
+    contact_phone: "+967770740731",
+    address: "صنعاء-الجمهورية اليمنية",
     logo_url: "/lovable-uploads/e45d98e8-4977-4f11-942d-aa0807b70a3c.png"
   });
 
@@ -45,8 +45,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center mb-4">
-              <img src={settings.logo_url || "/lovable-uploads/e45d98e8-4977-4f11-942d-aa0807b70a3c.png"} alt={settings.store_name || "نغمات السعادة"} className="h-10 w-auto" />
-              <h3 className="text-xl font-display font-bold mr-2 gradient-text">{settings.store_name || "نغمات السعادة"}</h3>
+              <img src={settings.logo_url || "/lovable-uploads/e45d98e8-4977-4f11-942d-aa0807b70a3c.png"} alt={settings.store_name || "متجرك ستور"} className="h-20 w-auto" />
+              <h3 className="text-xl font-display font-bold mr-2 gradient-text">{settings.store_name || "متجرك ستور"}</h3>
             </div>
             <p className="text-muted-foreground mb-4">متجر إلكتروني متخصص بتوفير منتجات عالية الجودة للمستحضرات التجميل وعناية الشخصية وطب وصحة</p>
             <div className="flex space-x-4 space-x-reverse">
@@ -84,6 +84,7 @@ const Footer = () => {
               <li><Link to="/products" className="hover:text-primary transition-colors">المنتجات</Link></li>
               <li><Link to="/categories" className="hover:text-primary transition-colors">التصنيفات</Link></li>
               <li><Link to="/about" className="hover:text-primary transition-colors">من نحن</Link></li>
+              <li><Link to="/OrderTracking" className="text-foreground hover:text-primary transition-colors">تتبع الطلب</Link></li>
               <li><Link to="/contact" className="hover:text-primary transition-colors">اتصل بنا</Link></li>
             </ul>
           </div>
@@ -119,8 +120,8 @@ const Footer = () => {
                     </span>
                   )) : (
                     <>
-                      حي الملقا، الرياض<br />
-                      المملكة العربية السعودية
+                      صنعاء<br />
+                      الجمهورية اليمنية
                     </>
                   )}
                 </address>
@@ -130,7 +131,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-border mt-8 pt-6 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} {settings.store_name || "نغمات السعادة"}. جميع الحقوق محفوظة.</p>
+          <p>© {new Date().getFullYear()} {settings.store_name || "متجرك ستور"}. جميع الحقوق محفوظة.</p>
         </div>
       </div>
     </footer>

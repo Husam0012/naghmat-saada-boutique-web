@@ -545,10 +545,10 @@ export const dataService = {
       
       // Default settings
       return {
-        store_name: "نغمات السعادة",
+        store_name: "متجرك ستور",
         contact_email: "info@naghmat-alsaada.com",
-        contact_phone: "967770740731+",
-        address: "حي الملقا، الرياض\nالمملكة العربية السعودية",
+        contact_phone: "+967770740731",
+        address: "صنعاء-الجمهورية اليمنية",
         social_instagram: "",
         social_facebook: "",
         social_twitter: "",

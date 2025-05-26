@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, User, Search, Menu, X } from "lucide-react";
+import ThemeToggle from "@/components/ui/ThemeToggle.tsx";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,10 +20,10 @@ const Header = () => {
           <Link to="/" className="flex items-center">
             <img 
               src="/lovable-uploads/e45d98e8-4977-4f11-942d-aa0807b70a3c.png" 
-              alt="نغمات السعادة" 
-              className="h-12 w-auto"
+              alt="متجرك ستور" 
+              className="h-20 w-auto"
             />
-            <span className="text-2xl font-display font-bold mr-2 gradient-text">نغمات السعادة</span>
+            <span className="text-2xl font-display font-bold mr-2 gradient-text">متجرك ستور</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -31,7 +32,9 @@ const Header = () => {
             <Link to="/categories" className="text-foreground hover:text-primary transition-colors">التصنيفات</Link>
             <Link to="/products" className="text-foreground hover:text-primary transition-colors">المنتجات</Link>
             <Link to="/about" className="text-foreground hover:text-primary transition-colors">من نحن</Link>
+            <Link to="/OrderTracking" className="text-foreground hover:text-primary transition-colors">تتبع الطلب</Link>
             <Link to="/contact" className="text-foreground hover:text-primary transition-colors">اتصل بنا</Link>
+             <ThemeToggle />
           </nav>
 
           {/* Desktop Action Buttons */}
@@ -47,12 +50,14 @@ const Header = () => {
                 <ShoppingCart className="h-5 w-5" />
               </Button>
             </Link>
+           
           </div>
 
           {/* Mobile Menu Button */}
           <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleMenu}>
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
+          
         </div>
 
         {/* Mobile Menu */}
@@ -64,6 +69,7 @@ const Header = () => {
               <Link to="/products" className="text-foreground hover:text-primary transition-colors py-2">المنتجات</Link>
               <Link to="/about" className="text-foreground hover:text-primary transition-colors py-2">من نحن</Link>
               <Link to="/contact" className="text-foreground hover:text-primary transition-colors py-2">اتصل بنا</Link>
+              <ThemeToggle />
             </nav>
             <div className="flex justify-around mt-4 pt-4 border-t border-border">
               <Button variant="ghost" size="icon" className="text-foreground hover:text-primary">
@@ -77,6 +83,8 @@ const Header = () => {
                   <ShoppingCart className="h-5 w-5" />
                 </Button>
               </Link>
+              
+              
             </div>
           </div>
         )}
