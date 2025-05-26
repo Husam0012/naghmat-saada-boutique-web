@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, ArrowRight, Check, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { useToast } from "@/hooks/use-toast";
 import { addToCart } from "@/utils/cartUtils";
 import { ProductWithOffer } from "@/utils/offerUtils";
@@ -164,13 +166,34 @@ const ProductDetailsPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Product Images */}
           <div>
-            <div className="aspect-square overflow-hidden rounded-lg border">
-              <img
-                src={currentImage || product.images?.[0] || "/placeholder.svg"}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {product.images && product.images.length > 1 ? (
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {product.images.map((image, index) => (
+                    <CarouselItem key={index}>
+                      <div className="aspect-square overflow-hidden rounded-lg border">
+                        <img
+                          src={image}
+                          alt={`${product.name} - ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            ) : (
+              <div className="aspect-square overflow-hidden rounded-lg border">
+                <img
+                  src={product.images?.[0] || "/placeholder.svg"}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+
             {product.images && product.images.length > 1 && (
               <div className="grid grid-cols-4 gap-2 mt-4">
                 {product.images.map((image, index) => (
@@ -251,9 +274,12 @@ const ProductDetailsPage = () => {
                 <TabsTrigger value="details">التفاصيل</TabsTrigger>
               </TabsList>
               <TabsContent value="description" className="py-4">
-                <div className="prose max-w-none">
-                  {product.description || "لا يوجد وصف لهذا المنتج."}
-                </div>
+                <div 
+                  className="prose max-w-none rich-text-content"
+                  dangerouslySetInnerHTML={{ 
+                    __html: product.description || "لا يوجد وصف لهذا المنتج." 
+                  }}
+                />
               </TabsContent>
               <TabsContent value="details" className="py-4">
                 <Card className="border-0 shadow-none">

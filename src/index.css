@@ -99,4 +99,84 @@
   .button-hover {
     @apply transition-all duration-300 hover:shadow-md hover:-translate-y-0.5;
   }
+
+  /* Rich text content styles for product descriptions */
+  .rich-text-content {
+    direction: rtl;
+    text-align: right;
+    font-family: 'Tajawal', sans-serif;
+  }
+
+  .rich-text-content p {
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+
+  .rich-text-content h1,
+  .rich-text-content h2,
+  .rich-text-content h3,
+  .rich-text-content h4,
+  .rich-text-content h5,
+  .rich-text-content h6 {
+    margin-bottom: 8px;
+    margin-top: 16px;
+    font-weight: bold;
+  }
+
+  .rich-text-content h1 { font-size: 2rem; }
+  .rich-text-content h2 { font-size: 1.75rem; }
+  .rich-text-content h3 { font-size: 1.5rem; }
+  .rich-text-content h4 { font-size: 1.25rem; }
+  .rich-text-content h5 { font-size: 1.125rem; }
+  .rich-text-content h6 { font-size: 1rem; }
+
+  .rich-text-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 16px 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .rich-text-content ul,
+  .rich-text-content ol {
+    margin-bottom: 12px;
+    padding-right: 20px;
+  }
+
+  .rich-text-content li {
+    margin-bottom: 4px;
+  }
+
+  .rich-text-content strong {
+    font-weight: bold;
+  }
+
+  .rich-text-content em {
+    font-style: italic;
+  }
+
+  .rich-text-content u {
+    text-decoration: underline;
+  }
+
+  .rich-text-content blockquote {
+    border-right: 4px solid hsl(var(--primary));
+    padding: 16px;
+    margin: 16px 0;
+    background-color: hsl(var(--muted));
+    border-radius: 8px;
+  }
+
+  .rich-text-content a {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+  }
+
+  .rich-text-content a:hover {
+    text-decoration: none;
+  }
 }
