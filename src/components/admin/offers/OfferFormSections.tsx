@@ -76,9 +76,9 @@ export const ImageSection = ({ form, targetType }: { form: UseFormReturn<OfferFo
           <FormLabel>صورة العرض</FormLabel>
           <FormControl>
             <ImageUpload
+              label="ارفع صورة العرض"
               value={field.value || ""}
               onChange={field.onChange}
-              placeholder="ارفع صورة العرض"
             />
           </FormControl>
           <FormMessage />

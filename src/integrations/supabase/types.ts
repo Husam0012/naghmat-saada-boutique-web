@@ -71,6 +71,7 @@ export type Database = {
           end_date: string
           id: string
           is_active: boolean | null
+          offer_image_url: string | null
           start_date: string
           title: string
           updated_at: string
@@ -85,6 +86,7 @@ export type Database = {
           end_date: string
           id?: string
           is_active?: boolean | null
+          offer_image_url?: string | null
           start_date: string
           title: string
           updated_at?: string
@@ -99,6 +101,7 @@ export type Database = {
           end_date?: string
           id?: string
           is_active?: boolean | null
+          offer_image_url?: string | null
           start_date?: string
           title?: string
           updated_at?: string

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -22,6 +21,7 @@ export type Offer = Tables<"offers"> & {
     id: string;
     name: string;
   } | null;
+  offer_image_url?: string | null;
 };
 
 const OffersManagement = () => {
