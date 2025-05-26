@@ -7,10 +7,9 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, ArrowRight, Check, Tag } from "lucide-react";
+import { ShoppingCart, ArrowRight, Check, Tag, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { useToast } from "@/hooks/use-toast";
 import { addToCart } from "@/utils/cartUtils";
 import { ProductWithOffer } from "@/utils/offerUtils";
@@ -33,7 +32,7 @@ const ProductDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
   const [quantity, setQuantity] = useState(1);
-  const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   // Fix the query to handle possible undefined id
@@ -45,9 +44,16 @@ const ProductDetailsPage = () => {
     enabled: !!productId,
   });
 
+  // Auto-slide functionality for multiple images
   useEffect(() => {
-    if (product && product.images && product.images.length > 0) {
-      setCurrentImage(product.images[0]);
+    if (product && product.images && product.images.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentImageIndex((prevIndex) => 
+          prevIndex === product.images!.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 4000); // Change image every 4 seconds
+
+      return () => clearInterval(interval);
     }
   }, [product]);
 
@@ -83,6 +89,26 @@ const ProductDetailsPage = () => {
         ),
       });
     }, 500);
+  };
+
+  const handlePrevImage = () => {
+    if (product && product.images) {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === 0 ? product.images!.length - 1 : prevIndex - 1
+      );
+    }
+  };
+
+  const handleNextImage = () => {
+    if (product && product.images) {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === product.images!.length - 1 ? 0 : prevIndex + 1
+      );
+    }
+  };
+
+  const handleThumbnailClick = (index: number) => {
+    setCurrentImageIndex(index);
   };
 
   if (isLoading) {
@@ -134,6 +160,9 @@ const ProductDetailsPage = () => {
     ? Math.round(((product.old_price - product.price) / product.old_price) * 100)
     : 0;
 
+  const hasMultipleImages = product.images && product.images.length > 1;
+  const currentImage = product.images?.[currentImageIndex] || product.images?.[0] || "/placeholder.svg";
+
   return (
     <Layout>
       <div className="container mx-auto py-12 px-4">
@@ -166,48 +195,65 @@ const ProductDetailsPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Product Images */}
           <div>
-            {product.images && product.images.length > 1 ? (
-              <Carousel className="w-full">
-                <CarouselContent>
-                  {product.images.map((image, index) => (
-                    <CarouselItem key={index}>
-                      <div className="aspect-square overflow-hidden rounded-lg border">
-                        <img
-                          src={image}
-                          alt={`${product.name} - ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-              </Carousel>
-            ) : (
-              <div className="aspect-square overflow-hidden rounded-lg border">
-                <img
-                  src={product.images?.[0] || "/placeholder.svg"}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
+            {/* Main Image Display with Auto-Slider */}
+            <div className="relative aspect-square overflow-hidden rounded-lg border group">
+              <img
+                src={currentImage}
+                alt={`${product.name} - ${currentImageIndex + 1}`}
+                className="w-full h-full object-cover transition-all duration-500 ease-in-out"
+                key={currentImageIndex} // Force re-render for smooth transition
+              />
+              
+              {/* Navigation arrows for multiple images */}
+              {hasMultipleImages && (
+                <>
+                  <button
+                    onClick={handlePrevImage}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={handleNextImage}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </button>
+                  
+                  {/* Image indicators */}
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 space-x-reverse">
+                    {product.images!.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleThumbnailClick(index)}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                          index === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                        }`}
+                        aria-label={`Go to image ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
 
-            {product.images && product.images.length > 1 && (
+            {/* Thumbnail grid for multiple images */}
+            {hasMultipleImages && (
               <div className="grid grid-cols-4 gap-2 mt-4">
-                {product.images.map((image, index) => (
+                {product.images!.map((image, index) => (
                   <div
                     key={index}
-                    className={`aspect-square rounded-lg border overflow-hidden cursor-pointer hover:border-primary ${
-                      currentImage === image ? "border-primary border-2" : ""
+                    className={`aspect-square rounded-lg border overflow-hidden cursor-pointer hover:border-primary transition-all duration-300 ${
+                      currentImageIndex === index ? "border-primary border-2 shadow-md" : ""
                     }`}
-                    onClick={() => setCurrentImage(image)}
+                    onClick={() => handleThumbnailClick(index)}
                   >
                     <img
                       src={image}
                       alt={`${product.name} - ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                     />
                   </div>
                 ))}
