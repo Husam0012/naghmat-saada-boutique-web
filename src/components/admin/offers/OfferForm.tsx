@@ -6,7 +6,8 @@ import {
   DiscountSection,
   TargetSection,
   DateSection,
-  StatusSection
+  StatusSection,
+  ImageSection
 } from "./OfferFormSections";
 import { UseFormReturn } from "react-hook-form";
 import { OfferFormValues } from "./offerSchema";
@@ -44,6 +45,7 @@ const OfferForm = ({
           categories={categories} 
           products={products} 
         />
+        <ImageSection form={form} targetType={targetType} />
         <DateSection form={form} />
         <StatusSection form={form} />
 

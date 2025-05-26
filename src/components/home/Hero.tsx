@@ -1,12 +1,10 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-
-
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-    
     <section className="py-16 px-4 md:px-8 lg:px-16 bg-gradient-to-l from-[ّ#4b4b4b] to-[#FEF7CD] overflow-hidden">
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between">
@@ -21,13 +19,17 @@ const Hero = () => {
               وجهتك الأولى للتسوق الإلكتروني بكل ثقة وسهولة نسعى دائماً لتوفير تجربة تسوق مميزة من خلال جودة المنتجات، الأسعار المناسبة، وسرعة التوصيل
             </p>
             <div className="flex flex-wrap justify-center md:justify-start gap-4 mb-8 md:mb-0">
-              <Button className="text-lg px-8 py-6 rounded-full button-hover">
-                تسوق الآن
-                <ArrowLeft className="mr-2 h-5 w-5" />
-              </Button>
-              <Button variant="outline" className="text-lg px-8 py-6 rounded-full button-hover">
-                عروضنا المميزة
-              </Button>
+              <Link to="/products">
+                <Button className="text-lg px-8 py-6 rounded-full button-hover">
+                  تسوق الآن
+                  <ArrowLeft className="mr-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link to="/special-offers">
+                <Button variant="outline" className="text-lg px-8 py-6 rounded-full button-hover">
+                  عروضنا المميزة
+                </Button>
+              </Link>
             </div>
           </div>
           <div className="md:w-1/2 mt-8 md:mt-0 relative">
@@ -46,7 +48,6 @@ const Hero = () => {
         </div>
       </div>
     </section>
-    
   );
 };
 

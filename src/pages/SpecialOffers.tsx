@@ -18,13 +18,16 @@ interface Offer {
   start_date: string;
   end_date: string;
   is_active: boolean;
+  offer_image_url?: string | null;
   applies_to_category_id: {
     id: string;
     name: string;
+    image_url?: string;
   } | null;
   applies_to_product_id: {
     id: string;
     name: string;
+    images?: string[];
   } | null;
 }
 
@@ -52,8 +55,29 @@ const SpecialOffersPage = () => {
       year: "numeric",
       month: "long",
       day: "numeric",
+      calendar: "gregory"
     };
     return new Date(dateString).toLocaleDateString("ar-SA", options);
+  };
+
+  const getOfferImage = (offer: Offer) => {
+    // If offer has a custom image, use it
+    if (offer.offer_image_url) {
+      return offer.offer_image_url;
+    }
+    
+    // If offer applies to a specific product, use the product's first image
+    if (offer.applies_to_product_id && offer.applies_to_product_id.images && offer.applies_to_product_id.images.length > 0) {
+      return offer.applies_to_product_id.images[0];
+    }
+    
+    // If offer applies to a category, use the category image
+    if (offer.applies_to_category_id && offer.applies_to_category_id.image_url) {
+      return offer.applies_to_category_id.image_url;
+    }
+    
+    // Default fallback image
+    return "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&q=80&w=1000";
   };
 
   return (
@@ -80,6 +104,7 @@ const SpecialOffersPage = () => {
             {[...Array(6)].map((_, index) => (
               <Card key={index}>
                 <CardContent className="p-6">
+                  <Skeleton className="h-48 w-full mb-4" />
                   <Skeleton className="h-8 w-3/4 mb-4" />
                   <Skeleton className="h-4 w-full mb-2" />
                   <Skeleton className="h-4 w-full mb-2" />
@@ -113,6 +138,16 @@ const SpecialOffersPage = () => {
                     العرض ساري حتى {formatDate(offer.end_date)}
                   </span>
                 </div>
+                
+                {/* Offer Image */}
+                <div className="aspect-video overflow-hidden">
+                  <img
+                    src={getOfferImage(offer)}
+                    alt={offer.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                
                 <CardContent className="p-6">
                   <div className="mb-6">
                     <h3 className="text-xl font-bold">{offer.title}</h3>

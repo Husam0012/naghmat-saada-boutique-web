@@ -2,16 +2,18 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { dataService } from "@/services/auth.service";
 
 interface CategoryProps {
   title: string;
   image: string;
-  url: string;
+  categoryId: string;
 }
 
-const CategoryCard = ({ title, image, url }: CategoryProps) => {
+const CategoryCard = ({ title, image, categoryId }: CategoryProps) => {
   return (
-    <Link to={url} className="block group">
+    <Link to={`/products?category=${categoryId}`} className="block group">
       <div className="relative rounded-2xl overflow-hidden card-hover">
         <div className="aspect-square">
           <img 
@@ -32,28 +34,40 @@ const CategoryCard = ({ title, image, url }: CategoryProps) => {
 };
 
 const Categories = () => {
-  const categories = [
-    {
-      title: "ملابس",
-      image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901?auto=format&fit=crop&q=80&w=1000",
-      url: "/categories/clothing",
-    },
-    {
-      title: "إكسسوارات",
-      image: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=crop&q=80&w=1000",
-      url: "/categories/accessories",
-    },
-    {
-      title: "العناية بالجمال",
-      image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04?auto=format&fit=crop&q=80&w=1000",
-      url: "/categories/beauty",
-    },
-    {
-      title: "عطور",
-      image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=crop&q=80&w=1000",
-      url: "/categories/perfumes",
-    },
-  ];
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: dataService.getCategories,
+  });
+
+  // Use the first 4 categories from the database, or fallback to static data
+  const displayCategories = categories.length > 0 
+    ? categories.slice(0, 4).map(cat => ({
+        title: cat.name,
+        image: cat.image_url || "https://images.unsplash.com/photo-1582562124811-c09040d0a901?auto=format&fit=crop&q=80&w=1000",
+        categoryId: cat.id,
+      }))
+    : [
+        {
+          title: "ملابس",
+          image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901?auto=format&fit=crop&q=80&w=1000",
+          categoryId: "default-1",
+        },
+        {
+          title: "إكسسوارات",
+          image: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=crop&q=80&w=1000",
+          categoryId: "default-2",
+        },
+        {
+          title: "العناية بالجمال",
+          image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04?auto=format&fit=crop&q=80&w=1000",
+          categoryId: "default-3",
+        },
+        {
+          title: "عطور",
+          image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=crop&q=80&w=1000",
+          categoryId: "default-4",
+        },
+      ];
 
   return (
     <section className="py-16 px-4">
@@ -66,8 +80,8 @@ const Categories = () => {
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {categories.map((category) => (
-            <CategoryCard key={category.title} {...category} />
+          {displayCategories.map((category) => (
+            <CategoryCard key={category.categoryId} {...category} />
           ))}
         </div>
       </div>

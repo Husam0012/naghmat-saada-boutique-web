@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tables } from "@/integrations/supabase/types";
 import { UseFormReturn } from "react-hook-form";
 import { OfferFormValues } from "./offerSchema";
+import ImageUpload from "../shared/ImageUpload";
 
 // Base form section props
 interface BaseFormSectionProps {
@@ -60,6 +61,38 @@ export const BasicInfoSection = ({ form }: BaseFormSectionProps) => (
     />
   </>
 );
+
+export const ImageSection = ({ form, targetType }: { form: UseFormReturn<OfferFormValues>; targetType: string }) => {
+  // Only show image upload for category or all products offers
+  if (targetType === "product") {
+    return null;
+  }
+
+  return (
+    <FormField
+      control={form.control}
+      name="offer_image_url"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>صورة العرض</FormLabel>
+          <FormControl>
+            <ImageUpload
+              value={field.value || ""}
+              onChange={field.onChange}
+              placeholder="ارفع صورة العرض"
+            />
+          </FormControl>
+          <FormMessage />
+          <p className="text-xs text-muted-foreground">
+            {targetType === "all" 
+              ? "اختر صورة لتمثيل هذا العرض على جميع المنتجات" 
+              : "اختر صورة لتمثيل هذا العرض للتصنيف"}
+          </p>
+        </FormItem>
+      )}
+    />
+  );
+};
 
 export const DiscountSection = ({ form, discountType }: DiscountSectionProps) => (
   <div className="grid grid-cols-2 gap-4">
