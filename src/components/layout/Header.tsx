@@ -2,8 +2,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, User, Search, Menu, X } from "lucide-react";
+import { ShoppingCart, User, Menu, X } from "lucide-react";
 import ThemeToggle from "@/components/ui/ThemeToggle.tsx";
+import { SearchDialog } from "@/components/ui/search-dialog";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -39,9 +40,7 @@ const Header = () => {
 
           {/* Desktop Action Buttons */}
           <div className="hidden md:flex items-center space-x-0 space-x-reverse space-x-4">
-            <Button variant="ghost" size="icon" className="text-foreground hover:text-primary">
-              <Search className="h-5 w-5" />
-            </Button>
+            <SearchDialog />
             <Button variant="ghost" size="icon" className="text-foreground hover:text-primary">
               <User className="h-5 w-5" />
             </Button>
@@ -72,9 +71,7 @@ const Header = () => {
               <ThemeToggle />
             </nav>
             <div className="flex justify-around mt-4 pt-4 border-t border-border">
-              <Button variant="ghost" size="icon" className="text-foreground hover:text-primary">
-                <Search className="h-5 w-5" />
-              </Button>
+              <SearchDialog />
               <Button variant="ghost" size="icon" className="text-foreground hover:text-primary">
                 <User className="h-5 w-5" />
               </Button>

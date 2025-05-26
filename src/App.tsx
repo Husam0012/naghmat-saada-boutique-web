@@ -16,6 +16,7 @@ import CheckoutPage from "./pages/Checkout";
 import OrderConfirmationPage from "./pages/OrderConfirmation";
 import OrderTrackingPage from "./pages/OrderTracking";
 import SpecialOffersPage from "./pages/SpecialOffers";
+import AccountPage from "./pages/Account";
 import AdminLoginPage from "./pages/AdminLogin";
 import AdminDashboardPage from "./pages/AdminDashboard";
 import AdminCategoriesPage from "./pages/AdminCategories";
@@ -46,6 +47,7 @@ const App = () => (
           <Route path="/order-confirmation/:orderNumber" element={<OrderConfirmationPage />} />
           <Route path="/order-tracking" element={<OrderTrackingPage />} />
           <Route path="/special-offers" element={<SpecialOffersPage />} />
+          <Route path="/account" element={<AccountPage />} />
           <Route path="/admin" element={<AdminLoginPage />} />
           <Route path="/admin/dashboard" element={
             <AdminAuthGuard>
