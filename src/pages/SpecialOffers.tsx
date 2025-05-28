@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -55,9 +54,8 @@ const SpecialOffersPage = () => {
       year: "numeric",
       month: "long",
       day: "numeric",
-      calendar: "gregory"
     };
-    return new Date(dateString).toLocaleDateString("ar-SA", options);
+    return new Date(dateString).toLocaleDateString("ar", options);
   };
 
   const getOfferImage = (offer: Offer) => {

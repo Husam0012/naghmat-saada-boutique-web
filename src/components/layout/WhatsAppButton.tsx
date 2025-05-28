@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -27,7 +26,7 @@ const WhatsAppButton = () => {
       <Button
         className="rounded-full bg-[#25D366] hover:bg-[#20BA5C] w-14 h-14 flex items-center justify-center shadow-lg button-hover"
         size="icon"
-        onClick={() => window.open("https://wa.me/966123456789", "_blank")}
+        onClick={() => window.open("https://wa.me/967730989442", "_blank")}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

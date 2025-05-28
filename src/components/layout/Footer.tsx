@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Phone, Mail } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { dataService } from "@/services/auth.service";
 
@@ -16,8 +16,8 @@ interface StoreSettings {
 const Footer = () => {
   const [settings, setSettings] = useState<StoreSettings>({
     store_name: "متجرك ستور",
-    contact_email: "info@naghmat-alsaada.com",
-    contact_phone: "+967770740731",
+    contact_email: "support@matjarik.shop",
+    contact_phone: "+967730989442",
     address: "صنعاء-الجمهورية اليمنية",
     logo_url: "/lovable-uploads/e45d98e8-4977-4f11-942d-aa0807b70a3c.png"
   });
@@ -75,6 +75,7 @@ const Footer = () => {
               <li><Link to="/" className="hover:text-primary transition-colors">الرئيسية</Link></li>
               <li><Link to="/products" className="hover:text-primary transition-colors">المنتجات</Link></li>
               <li><Link to="/categories" className="hover:text-primary transition-colors">التصنيفات</Link></li>
+              <li><Link to="/special-offers" className="hover:text-primary transition-colors">العروض الخاصة</Link></li>
               <li><Link to="/about" className="hover:text-primary transition-colors">من نحن</Link></li>
               <li><Link to="/OrderTracking" className="text-foreground hover:text-primary transition-colors">تتبع الطلب</Link></li>
               <li><Link to="/contact" className="hover:text-primary transition-colors">اتصل بنا</Link></li>
@@ -97,13 +98,18 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-center">
                 <Phone className="h-5 w-5 ml-2 text-primary" />
-                <span>{settings.contact_phone || "967770740731+"}</span>
+                <a href={`tel:${settings.contact_phone || "+967730989442"}`} className="hover:text-primary transition-colors">
+                  {settings.contact_phone || "+967730989442"}
+                </a>
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 ml-2 text-primary" />
-                <span>{settings.contact_email || "info@naghmat-alsaada.com"}</span>
+                <a href={`mailto:${settings.contact_email || "support@matjarik.shop"}`} className="hover:text-primary transition-colors">
+                  {settings.contact_email || "support@matjarik.shop"}
+                </a>
               </li>
-              <li>
+              <li className="flex items-start">
+                <MapPin className="h-5 w-5 ml-2 mt-1 text-primary" />
                 <address className="not-italic">
                   {settings.address ? settings.address.split("\n").map((line, i) => (
                     <span key={i}>

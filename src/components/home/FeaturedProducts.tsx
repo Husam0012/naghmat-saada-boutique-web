@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { dataService } from "@/services/auth.service";
 import { ProductWithOffer } from "@/utils/offerUtils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCart } from "@/hooks/use-cart";
 
 interface ProductCardProps {
   id: string;
@@ -23,6 +23,17 @@ interface ProductCardProps {
 
 const ProductCard = ({ id, name, price, oldPrice, image, isNew, isOnSale, offerTitle }: ProductCardProps) => {
   const [liked, setLiked] = useState(false);
+  const { addItem } = useCart();
+
+  const handleAddToCart = () => {
+    addItem({
+      id,
+      name,
+      price,
+      image,
+      quantity: 1
+    });
+  };
 
   return (
     <Card className="overflow-hidden border-none shadow-sm group card-hover">
@@ -66,7 +77,7 @@ const ProductCard = ({ id, name, price, oldPrice, image, isNew, isOnSale, offerT
               <span className="text-sm text-muted-foreground line-through">{oldPrice} ر.س</span>
             )}
           </div>
-          <Button size="icon" className="rounded-full h-9 w-9">
+          <Button size="icon" className="rounded-full h-9 w-9" onClick={handleAddToCart}>
             <ShoppingCart className="h-4 w-4" />
           </Button>
         </div>
@@ -76,13 +87,41 @@ const ProductCard = ({ id, name, price, oldPrice, image, isNew, isOnSale, offerT
 };
 
 const FeaturedProducts = () => {
-  const { data: products = [], isLoading } = useQuery({
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [products, setProducts] = useState<ProductWithOffer[]>([]);
+  const [visibleProducts, setVisibleProducts] = useState<ProductWithOffer[]>([]);
+  
+  const { data = [], isLoading } = useQuery({
     queryKey: ["featured-products"],
     queryFn: async () => {
       const allProducts = await dataService.getProducts();
-      return allProducts.filter((product: ProductWithOffer) => product.featured === true).slice(0, 4);
+      return allProducts.filter((product: ProductWithOffer) => product.featured === true);
     },
   });
+  
+  useEffect(() => {
+    if (data.length > 0) {
+      setProducts(data);
+      updateVisibleProducts(0, data);
+    }
+  }, [data]);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (products.length > 4) {
+        const nextIndex = (currentIndex + 1) % (products.length - 3);
+        setCurrentIndex(nextIndex);
+        updateVisibleProducts(nextIndex, products);
+      }
+    }, 4000);
+    
+    return () => clearInterval(interval);
+  }, [currentIndex, products]);
+  
+  const updateVisibleProducts = (startIndex: number, allProducts: ProductWithOffer[]) => {
+    const productsToShow = allProducts.slice(startIndex, startIndex + 4);
+    setVisibleProducts(productsToShow);
+  };
 
   if (isLoading) {
     return (
@@ -124,7 +163,19 @@ const FeaturedProducts = () => {
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {products.map((product: ProductWithOffer) => (
+          {visibleProducts.length > 0 ? visibleProducts.map((product: ProductWithOffer) => (
+            <ProductCard 
+              key={product.id} 
+              id={product.id}
+              name={product.name}
+              price={product.price}
+              oldPrice={product.old_price}
+              image={product.images?.[0] || "/placeholder.svg"}
+              isNew={!product.old_price && product.created_at && new Date(product.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)}
+              isOnSale={!!product.old_price}
+              offerTitle={product.applied_offer?.title}
+            />
+          )) : products.slice(0, 4).map((product: ProductWithOffer) => (
             <ProductCard 
               key={product.id} 
               id={product.id}

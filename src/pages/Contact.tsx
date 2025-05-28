@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -61,8 +60,8 @@ const ContactPage = () => {
                 </div>
                 <h3 className="font-bold text-lg mb-2">الهاتف</h3>
                 <p className="text-muted-foreground">لا تتردد في الاتصال بنا مباشرة</p>
-                <a href="tel:+966123456789" className="mt-2 font-medium hover:text-primary transition-colors">
-                  +966 123 456 789
+                <a href="tel:+967730989442" className="mt-2 font-medium hover:text-primary transition-colors">
+                  +967730989442
                 </a>
               </CardContent>
             </Card>
@@ -74,8 +73,8 @@ const ContactPage = () => {
                 </div>
                 <h3 className="font-bold text-lg mb-2">البريد الإلكتروني</h3>
                 <p className="text-muted-foreground">راسلنا عبر البريد الإلكتروني</p>
-                <a href="mailto:info@naghmat-alsaada.com" className="mt-2 font-medium hover:text-primary transition-colors">
-                  info@naghmat-alsaada.com
+                <a href="mailto:support@matjarik.shop" className="mt-2 font-medium hover:text-primary transition-colors">
+                  support@matjarik.shop
                 </a>
               </CardContent>
             </Card>
