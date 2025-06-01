@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,7 +26,9 @@ const ProductCard = ({ id, name, price, oldPrice, image, isNew, isOnSale, offerT
   const [liked, setLiked] = useState(false);
   const { addItem } = useCart();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     addItem({
       id,
       name,

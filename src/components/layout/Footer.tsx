@@ -1,7 +1,9 @@
+
 import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { dataService } from "@/services/auth.service";
+import { useQuery } from "@tanstack/react-query";
 
 interface StoreSettings {
   store_name?: string;
@@ -20,6 +22,11 @@ const Footer = () => {
     contact_phone: "+967730989442",
     address: "صنعاء-الجمهورية اليمنية",
     logo_url: "/lovable-uploads/e45d98e8-4977-4f11-942d-aa0807b70a3c.png"
+  });
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: dataService.getCategories,
   });
 
   useEffect(() => {
@@ -85,11 +92,16 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-4">التصنيفات</h3>
             <ul className="space-y-2">
-              <li><Link to="/categories/clothing" className="hover:text-primary transition-colors">ملابس</Link></li>
-              <li><Link to="/categories/accessories" className="hover:text-primary transition-colors">إكسسوارات</Link></li>
-              <li><Link to="/categories/beauty" className="hover:text-primary transition-colors">العناية بالجمال</Link></li>
-              <li><Link to="/categories/perfumes" className="hover:text-primary transition-colors">عطور</Link></li>
-              <li><Link to="/categories/home" className="hover:text-primary transition-colors">مستلزمات منزلية</Link></li>
+              {categories.slice(0, 5).map((category: any) => (
+                <li key={category.id}>
+                  <Link 
+                    to={`/products?category=${category.id}`} 
+                    className="hover:text-primary transition-colors"
+                  >
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           
@@ -98,30 +110,21 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-center">
                 <Phone className="h-5 w-5 ml-2 text-primary" />
-                <a href={`tel:${settings.contact_phone || "+967730989442"}`} className="hover:text-primary transition-colors">
-                  {settings.contact_phone || "+967730989442"}
+                <a href="tel:+967730989442" className="hover:text-primary transition-colors">
+                  +967730989442
                 </a>
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 ml-2 text-primary" />
-                <a href={`mailto:${settings.contact_email || "support@matjarik.shop"}`} className="hover:text-primary transition-colors">
-                  {settings.contact_email || "support@matjarik.shop"}
+                <a href="mailto:support@matjarik.shop" className="hover:text-primary transition-colors">
+                  support@matjarik.shop
                 </a>
               </li>
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 ml-2 mt-1 text-primary" />
                 <address className="not-italic">
-                  {settings.address ? settings.address.split("\n").map((line, i) => (
-                    <span key={i}>
-                      {line}
-                      {i < settings.address!.split("\n").length - 1 && <br />}
-                    </span>
-                  )) : (
-                    <>
-                      صنعاء<br />
-                      الجمهورية اليمنية
-                    </>
-                  )}
+                  صنعاء<br />
+                  الجمهورية اليمنية
                 </address>
               </li>
             </ul>
