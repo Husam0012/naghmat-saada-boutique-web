@@ -1,10 +1,8 @@
-
 import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { dataService } from "@/services/auth.service";
 import { useQuery } from "@tanstack/react-query";
-
 interface StoreSettings {
   store_name?: string;
   contact_email?: string;
@@ -14,7 +12,6 @@ interface StoreSettings {
   social_facebook?: string;
   logo_url?: string;
 }
-
 const Footer = () => {
   const [settings, setSettings] = useState<StoreSettings>({
     store_name: "متجرك ستور",
@@ -23,12 +20,12 @@ const Footer = () => {
     address: "صنعاء-الجمهورية اليمنية",
     logo_url: "/lovable-uploads/e45d98e8-4977-4f11-942d-aa0807b70a3c.png"
   });
-
-  const { data: categories = [] } = useQuery({
+  const {
+    data: categories = []
+  } = useQuery({
     queryKey: ["categories"],
-    queryFn: dataService.getCategories,
+    queryFn: dataService.getCategories
   });
-
   useEffect(() => {
     const loadSettings = async () => {
       try {
@@ -40,12 +37,9 @@ const Footer = () => {
         console.error("Error loading store settings:", error);
       }
     };
-
     loadSettings();
   }, []);
-
-  return (
-    <footer className="bg-muted pt-12 pb-6 mt-12">
+  return <footer className="bg-muted pt-12 pb-6 mt-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           <div>
@@ -53,7 +47,7 @@ const Footer = () => {
               <img src={settings.logo_url || "/lovable-uploads/e45d98e8-4977-4f11-942d-aa0807b70a3c.png"} alt={settings.store_name || "متجرك ستور"} className="h-20 w-auto" />
               <h3 className="text-xl font-display font-bold mr-2 gradient-text">{settings.store_name || "متجرك ستور"}</h3>
             </div>
-            <p className="text-muted-foreground mb-4">متجر إلكتروني متخصص بتوفير منتجات عالية الجودة للمستحضرات التجميل وعناية الشخصية وطب وصحة</p>
+            <p className="text-muted-foreground mb-4 text-base">متجر إلكتروني متخصص بتوفير منتجات عالية الجودة للمستحضرات التجميل وعناية الشخصية وطب وصحة و عطور وكل شي يخطر في بالك</p>
             <div className="flex space-x-4 space-x-reverse">
               <a href="https://www.instagram.com/mat.jarik?igsh=aWtueHI5NjBndGx0" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
                 <span className="sr-only">Instagram</span>
@@ -92,16 +86,11 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-4">التصنيفات</h3>
             <ul className="space-y-2">
-              {categories.slice(0, 5).map((category: any) => (
-                <li key={category.id}>
-                  <Link 
-                    to={`/products?category=${category.id}`} 
-                    className="hover:text-primary transition-colors"
-                  >
+              {categories.slice(0, 5).map((category: any) => <li key={category.id}>
+                  <Link to={`/products?category=${category.id}`} className="hover:text-primary transition-colors">
                     {category.name}
                   </Link>
-                </li>
-              ))}
+                </li>)}
             </ul>
           </div>
           
@@ -135,8 +124,6 @@ const Footer = () => {
           <p>© {new Date().getFullYear()} {settings.store_name || "متجرك ستور"}. جميع الحقوق محفوظة.</p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
